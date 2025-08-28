@@ -1,0 +1,31 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: container-log-rotation
+  labels:
+    app: cluster-logging-config
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/master: ""
+  kubeletConfig:
+    # Maximum size for container log files before rotation
+    containerLogMaxSize: "50Mi"
+    # Maximum number of rotated log files to keep
+    containerLogMaxFiles: 5
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: container-log-rotation-worker
+  labels:
+    app: cluster-logging-config
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ""
+  kubeletConfig:
+    # Maximum size for container log files before rotation
+    containerLogMaxSize: "50Mi"
+    # Maximum number of rotated log files to keep
+    containerLogMaxFiles: 5
