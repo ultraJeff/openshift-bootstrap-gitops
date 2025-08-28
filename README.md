@@ -7,11 +7,13 @@ This repository contains standardized configurations for bootstrapping new OpenS
 ```
 ├── cluster-configs/          # Cluster-level configurations
 │   ├── logging/             # Log management and retention
+│   ├── storage/             # Storage classes and persistent volumes
 │   ├── monitoring/          # Monitoring and alerting setup
 │   ├── networking/          # Network policies and ingress
 │   └── security/            # Security policies and RBAC
 ├── applications/            # Application deployments
 └── infrastructure/          # Infrastructure components
+    └── disk-partitioning/   # SNO disk partitioning (install-time only)
 ```
 
 ## Quick Start
@@ -58,11 +60,30 @@ Based on cluster analysis from 2025-08-28:
 - **Pod logs**: 1.6G
 - **Status**: Manageable but growing
 
+## Single Node OpenShift (SNO) Disk Partitioning
+
+⚠️ **CRITICAL: Must be done during installation only!**
+
+For SNO clusters, separate your root filesystem from container storage:
+
+1. **Before installation**: Customize `infrastructure/disk-partitioning/98-create-a-partition-for-lvmstorage.yaml`
+2. **During installation**: Upload the MachineConfig via Assisted Installer
+3. **After installation**: Apply storage configs for LVM-based dynamic provisioning
+
+```bash
+# Post-installation: Set up LVM storage
+oc apply -f cluster-configs/storage/lvmstorage-operator.yaml
+oc apply -f cluster-configs/storage/lvmcluster.yaml
+```
+
+See `infrastructure/disk-partitioning/README.md` for detailed instructions.
+
 ## Adding to New Clusters
 
-1. **For new cluster bootstrap**: Apply all configs in `cluster-configs/`
-2. **For existing clusters**: Apply selectively based on needs
-3. **With ArgoCD/GitOps**: Point to this repo for automated application
+1. **For SNO clusters**: Use disk partitioning configs during installation
+2. **For new cluster bootstrap**: Apply all configs in `cluster-configs/`
+3. **For existing clusters**: Apply selectively based on needs
+4. **With ArgoCD/GitOps**: Point to this repo for automated application
 
 ## Configuration Customization
 

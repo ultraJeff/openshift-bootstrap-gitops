@@ -1,0 +1,36 @@
+---
+apiVersion: lvm.topolvm.io/v1alpha1
+kind: LVMCluster
+metadata:
+  name: lvmcluster-sample
+  namespace: openshift-storage
+spec:
+  storage:
+    deviceClasses:
+    - name: vg1
+      # This matches the partition label created during installation
+      deviceSelector:
+        paths:
+        - /dev/disk/by-partlabel/lvmstorage
+      thinPoolConfig:
+        name: thin-pool-1
+        sizePercent: 90
+        overprovisionRatio: 10
+      # Optional: specify node selector if you want to limit to specific nodes
+      # nodeSelector:
+      #   kubernetes.io/hostname: "node-name"
+---
+# Optional: Create a default storage class
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: lvms-vg1
+  annotations:
+    # Uncomment to make this the default storage class
+    # storageclass.kubernetes.io/is-default-class: "true"
+parameters:
+  csi.storage.k8s.io/fstype: ext4
+provisioner: topolvm.io
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
