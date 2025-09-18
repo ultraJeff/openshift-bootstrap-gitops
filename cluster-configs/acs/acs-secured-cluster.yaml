@@ -1,0 +1,52 @@
+---
+apiVersion: platform.stackrox.io/v1alpha1
+kind: SecuredCluster
+metadata:
+  name: local-cluster
+  namespace: stackrox
+  labels:
+    config.openshift.io/component: acs
+    config.openshift.io/managed-by: gitops
+spec:
+  clusterName: "tallgeese"  # Name of this cluster
+  centralEndpoint: "central.stackrox.svc:443"  # Internal service for same-cluster deployment
+  admissionControl:
+    listenOnCreates: true
+    listenOnUpdates: true
+    dynamic:
+      enforceOnCreates: true
+      enforceOnUpdates: false  # Reduced enforcement for development
+      scanInline: false        # Disable inline scanning for performance
+      disableBypass: false     # Allow bypassing for development
+      timeout: 20              # Reduced timeout for resource constraints
+    replicas: 1               # Single replica for SNO
+    resources:
+      requests:
+        cpu: "50m"            # Minimal CPU for SNO
+        memory: "100Mi"       # Minimal memory for SNO
+      limits:
+        cpu: "200m"           # Reduced limits for SNO
+        memory: "500Mi"       # Reduced limits for SNO
+  perNode:
+    collector:
+      collection: "EBPF"      # Use eBPF for better performance on SNO
+      imageFlavor: "Regular"  # Use regular image (not slim) to avoid dependency on Central
+      resources:
+        requests:
+          cpu: "50m"          # Minimal CPU for SNO
+          memory: "320Mi"     # As per Red Hat docs minimum
+        limits:
+          cpu: "200m"         # Reduced limits for SNO  
+          memory: "1Gi"       # As per Red Hat docs limit
+    taintToleration: "TolerateTaints"  # Tolerate taints for SNO deployment
+  sensor:
+    resources:
+      requests:
+        cpu: "200m"           # Reduced from 1 core for SNO
+        memory: "500Mi"       # Reduced from 1Gi for SNO
+      limits:
+        cpu: "500m"           # Reduced from 2 cores for SNO
+        memory: "1Gi"         # Reduced from 4Gi for SNO
+  # Disable scanner on secured cluster since we have it on Central
+  scanner:
+    scannerComponent: "Disabled"

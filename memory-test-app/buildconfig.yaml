@@ -1,0 +1,34 @@
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: memory-test-app-build
+  namespace: memory-test
+  labels:
+    app: memory-test-app
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: memory-test-app:latest
+  source:
+    type: Binary
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  triggers:
+  - type: ConfigChange
+
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: memory-test-app
+  namespace: memory-test
+  labels:
+    app: memory-test-app
+spec:
+  lookupPolicy:
+    local: true

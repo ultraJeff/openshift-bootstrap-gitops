@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: acs-configs
+
+resources:
+- acs-operator.yaml
+- stackrox-namespace.yaml
+- acs-central.yaml
+# SecuredCluster requires init bundle first - use deploy-secured-cluster.sh
+# - acs-secured-cluster.yaml
+
+commonLabels:
+  config.openshift.io/component: acs
+  config.openshift.io/managed-by: gitops

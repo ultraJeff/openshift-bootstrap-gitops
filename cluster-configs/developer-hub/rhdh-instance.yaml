@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhdh
+  labels:
+    name: rhdh
+    openshift.io/cluster-monitoring: "true"
+---
+apiVersion: rhdh.redhat.com/v1alpha3
+kind: Backstage
+metadata:
+  name: developer-hub
+  namespace: rhdh
+  labels:
+    app.kubernetes.io/name: backstage
+    config.openshift.io/component: developer-hub
+    config.openshift.io/managed-by: gitops
+spec:
+  # Database configuration - using embedded PostgreSQL for simplicity
+  database:
+    enableLocalDb: true
+  
+  # Application configuration
+  application:
+    # Use external ConfigMap for app configuration
+    appConfig:
+      configMaps:
+      - name: app-config-rhdh
+      mountPath: /opt/app-root/src
+    
+    # Environment variables from Secret
+    extraEnvs:
+      secrets:
+      - name: my-rhdh-secrets
+    
+    # Single replica for development
+    replicas: 1
+    
+    # Route configuration
+    route:
+      enabled: true
+---
+# RHDH Secrets - contains backend configuration and authentication secrets
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-rhdh-secrets
+  namespace: rhdh
+  annotations:
+    rhdh.redhat.com/backstage-name: developer-hub
+  labels:
+    rhdh.redhat.com/ext-config-sync: "true"
+    config.openshift.io/component: developer-hub
+    config.openshift.io/managed-by: gitops
+type: Opaque
+stringData:
+  # Backend secret key for authentication
+  BACKEND_SECRET: "hS3HKUWPySoGH5js"
+  # Backend URL for CORS and base URL configuration
+  BACKEND_URL: "https://backstage-developer-hub-rhdh.apps.tallgeese.ultra.lab"
+  # Disable TLS rejection for development
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
+---
+# RHDH Application Configuration - contains Backstage app-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-rhdh
+  namespace: rhdh
+  annotations:
+    rhdh.redhat.com/backstage-name: developer-hub
+  labels:
+    rhdh.redhat.com/ext-config-sync: "true"
+    config.openshift.io/component: developer-hub
+    config.openshift.io/managed-by: gitops
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: ${BACKEND_URL}
+    auth:
+      environment: development
+      externalAccess:
+      - options:
+          subject: orchestrator
+          token: ${BACKEND_SECRET}
+        type: static
+      providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
+      session:
+        secret:
+          $env: BACKEND_SECRET
+    backend:
+      auth:
+        keys:
+        - secret: ${BACKEND_SECRET}
+      cors:
+        origin: ${BACKEND_URL}
+      baseUrl: ${BACKEND_URL}

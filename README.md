@@ -6,11 +6,14 @@ This repository contains standardized configurations for bootstrapping new OpenS
 
 ```
 ├── cluster-configs/          # Cluster-level configurations
+│   ├── acm/                 # Advanced Cluster Management
+│   ├── developer-hub/       # Red Hat Developer Hub (Backstage)
+│   ├── gitops/              # OpenShift GitOps (ArgoCD)
 │   ├── logging/             # Log management and retention
-│   ├── storage/             # Storage classes and persistent volumes
-│   ├── monitoring/          # Monitoring and alerting setup
-│   ├── networking/          # Network policies and ingress
-│   └── security/            # Security policies and RBAC
+│   ├── security/            # Security policies, RBAC, and authentication
+│   ├── storage/             # LVM Storage, StorageClass, Image Registry
+│   ├── monitoring/          # Monitoring and alerting setup (TODO)
+│   └── networking/          # Network policies and ingress (TODO)
 ├── applications/            # Application deployments
 └── infrastructure/          # Infrastructure components
     └── disk-partitioning/   # SNO disk partitioning (install-time only)
@@ -18,24 +21,47 @@ This repository contains standardized configurations for bootstrapping new OpenS
 
 ## Quick Start
 
-### 1. Apply Log Retention (Recommended First)
+### Option A: Bootstrap Everything (New Cluster)
 ```bash
-# Container log rotation (immediate effect)
-oc apply -f cluster-configs/logging/kubelet-log-rotation.yaml
-
-# System journal retention (requires node reboot)
-oc apply -f cluster-configs/logging/journald-retention.yaml
+# Deploy all bootstrap configurations
+oc apply -k cluster-configs/
 ```
 
-### 2. Monitor Application
-```bash
-# Check KubeletConfig status
-oc get kubeletconfig
-oc describe kubeletconfig container-log-rotation
+### Option B: Deploy Components Individually
 
-# Check MachineConfig status
-oc get machineconfig | grep retention
-oc get machineconfigpool
+#### 1. Storage (Deploy First)
+```bash
+# LVM Storage, StorageClass, and Image Registry
+oc apply -k cluster-configs/storage/
+```
+
+#### 2. Platform Operators
+```bash
+# OpenShift GitOps (ArgoCD)
+oc apply -k cluster-configs/gitops/
+
+# Advanced Cluster Management
+oc apply -k cluster-configs/acm/
+
+# Log retention policies
+oc apply -k cluster-configs/logging/
+```
+
+#### 3. Monitor Deployment
+```bash
+# Check operator status
+oc get subscriptions -A
+oc get csv -A
+
+# Check storage
+oc get lvmcluster -n openshift-storage
+oc get pvc -n openshift-image-registry
+
+# Check GitOps
+oc get argocd -n openshift-gitops
+
+# Check ACM
+oc get multiclusterhub -n open-cluster-management
 ```
 
 ## Logging Configuration Details

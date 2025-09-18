@@ -12,6 +12,7 @@ spec:
       files:
       - path: /etc/systemd/journald.conf.d/99-retention.conf
         mode: 0644
+        overwrite: false
         contents:
           inline: |
             [Journal]
@@ -21,8 +22,8 @@ spec:
             MaxRetentionSec=30d
             # Rotate log files daily
             MaxFileSec=1d
-            # Keep at least 1GB free on disk
-            SystemKeepFree=1G
+            # Keep at least 15GB free on disk
+            SystemKeepFree=15G
 ---
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
@@ -38,6 +39,7 @@ spec:
       files:
       - path: /etc/systemd/journald.conf.d/99-retention.conf
         mode: 0644
+        overwrite: false
         contents:
           inline: |
             [Journal]
@@ -47,5 +49,5 @@ spec:
             MaxRetentionSec=30d
             # Rotate log files daily
             MaxFileSec=1d
-            # Keep at least 1GB free on disk
-            SystemKeepFree=1G
+            # Keep at least 15GB free on disk
+            SystemKeepFree=15G

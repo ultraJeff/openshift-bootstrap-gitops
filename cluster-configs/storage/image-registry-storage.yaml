@@ -1,0 +1,28 @@
+---
+# PVC for OpenShift Image Registry
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: image-registry-storage
+  namespace: openshift-image-registry
+  annotations:
+    imageregistry.openshift.io: "true"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: lvms-lvmstorage
+---
+# Configure the OpenShift Image Registry to use storage
+apiVersion: imageregistry.operator.openshift.io/v1
+kind: Config
+metadata:
+  name: cluster
+spec:
+  managementState: Managed
+  replicas: 1
+  storage:
+    pvc:
+      claim: image-registry-storage

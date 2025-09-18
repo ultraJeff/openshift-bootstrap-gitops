@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: stackrox
+  labels:
+    name: stackrox
+    openshift.io/cluster-monitoring: "true"

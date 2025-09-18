@@ -1,0 +1,39 @@
+---
+apiVersion: platform.stackrox.io/v1alpha1
+kind: Central
+metadata:
+  name: stackrox-central-services
+  namespace: stackrox
+spec:
+  central:
+    exposure:
+      route:
+        enabled: true
+    resources:
+      requests:
+        cpu: "500m"       # Reduced from 1500m for SNO compatibility
+        memory: "2Gi"     # Reduced from 4Gi for SNO compatibility
+      limits:
+        cpu: "2"          # Reduced from 4 cores for SNO compatibility
+        memory: "4Gi"     # Reduced from 8Gi for SNO compatibility
+    persistence:
+      persistentVolumeClaim:
+        claimName: "stackrox-db"
+        createClaim: true
+        size: "100Gi"     # Keep storage requirement as recommended
+  scanner:
+    analyzer:
+      resources:
+        requests:
+          cpu: "200m"     # Reduced from 1200m for SNO compatibility
+          memory: "1Gi"   # Reduced from 2700Mi for SNO compatibility
+        limits:
+          cpu: "1"        # Reduced from 5 cores for SNO compatibility
+          memory: "2Gi"   # Reduced from 8000Mi for SNO compatibility
+      scaling:
+        autoScaling: "Disabled"  # Disable autoscaling for resource constraints
+        replicas: 1             # Single replica for SNO
+    scannerComponent: "Enabled"
+  # Disable Scanner V4 to reduce resource consumption
+  scannerV4:
+    scannerComponent: "Disabled"
