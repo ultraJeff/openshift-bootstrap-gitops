@@ -1,23 +1,47 @@
-# Memory Test Application
+# Resource Test Application
 
-A simple Python application that consumes exactly 2GB of memory for testing OpenShift resource limits and constraints. This application is designed to help validate memory resource management, monitoring, and alerting in OpenShift environments.
+A comprehensive Python application for testing OpenShift memory and CPU resource limits and constraints. This application provides both memory allocation testing (up to 2GB) and CPU stress testing with configurable parameters, designed to validate resource management, monitoring, and alerting in OpenShift environments.
 
 ## Features
 
-- **Controlled Memory Allocation**: Allocates exactly 2GB of memory on startup
-- **Health Endpoints**: Provides `/health` and `/ready` endpoints for Kubernetes probes
-- **Memory Statistics**: Real-time memory usage reporting via `/memory` endpoint  
-- **Dynamic Control**: Endpoints to allocate (`/allocate`) and release (`/release`) memory
-- **OpenShift Ready**: Follows OpenShift security best practices and constraints
+**Memory Testing:**
+- **Parameterized Memory Allocation**: Allocate 10MB to 2GB of memory with precision
+- **Multiple Allocation Methods**: Query parameters, path parameters, and defaults
+- **Memory Statistics**: Real-time memory usage monitoring and reporting
+- **Safety Limits**: Built-in validation and limits to prevent system issues
+
+**CPU Testing:**
+- **Multi-threaded CPU Stress**: Configurable thread count (1 to available CPU cores)
+- **Intensity Control**: Adjustable CPU load from 10% to 100% per thread
+- **Duration Control**: Configurable stress test duration (1 to 300 seconds)
+- **Real-time Monitoring**: Live CPU usage statistics and thread tracking
+
+**General:**
+- **Health Endpoints**: Comprehensive health checks with resource statistics
+- **Combined Testing**: Simultaneous memory and CPU stress testing
+- **OpenShift Ready**: Follows OpenShift security best practices and resource constraints
 
 ## Application Endpoints
 
-- `/` - Application info and current memory stats
-- `/health` - Health check endpoint (for liveness probes)
-- `/ready` - Readiness check endpoint (for readiness probes)
-- `/memory` - Detailed memory statistics
-- `/allocate` - Trigger memory allocation (allocates 2GB)
-- `/release` - Release allocated memory
+**Resource Monitoring:**
+- `/` - Application info with capabilities and usage examples
+- `/health` - Health check endpoint with full resource statistics
+- `/ready` - Readiness check endpoint
+- `/resources` - Combined memory and CPU statistics
+- `/memory` - Memory statistics only
+- `/cpu` - CPU statistics only
+
+**Memory Testing:**
+- `/allocate` - Allocate memory (default 2GB)
+- `/allocate?mb=X` - Allocate X MB via query parameter
+- `/allocate/<mb>` - Allocate X MB via path parameter
+- `/release` - Release all allocated memory
+
+**CPU Testing:**
+- `/cpu/stress` - Start CPU stress test (default: all cores, 30s, 100%)
+- `/cpu/stress?threads=X&duration=Y&intensity=Z` - CPU stress with parameters
+- `/cpu/stress/<threads>` - CPU stress with specific thread count
+- `/cpu/stop` - Stop CPU stress testing
 
 ## Quick Start
 
@@ -29,34 +53,49 @@ A simple Python application that consumes exactly 2GB of memory for testing Open
 
 ### Option 1: Build and Deploy in OpenShift (Recommended)
 
-1. **Create the project and build resources:**
+1. **Create the namespace:**
    ```bash
-   # Create namespace and build configuration
+   # Create namespace first
+   oc apply -f namespace.yaml
+   ```
+
+2. **Create build resources:**
+   ```bash
+   # Create build configuration and image stream
    oc apply -f buildconfig.yaml
    ```
 
-2. **Build the application:**
+3. **Build the application:**
    ```bash
    # Start a binary build from the current directory
-   oc start-build memory-test-app-build --from-dir=. --follow
+   oc start-build resource-test-app-build --from-dir=. --follow
    ```
 
-3. **Deploy the application:**
+4. **Deploy the application:**
    ```bash
-   # Deploy with resource limits
+   # Deploy the application with resource limits
    oc apply -f deployment.yaml
    ```
 
-4. **Verify deployment:**
+5. **Create service and route:**
+   ```bash
+   # Create service for internal communication
+   oc apply -f service.yaml
+   
+   # Create route for external access
+   oc apply -f route.yaml
+   ```
+
+6. **Verify deployment:**
    ```bash
    # Check pod status
-   oc get pods -n memory-test
+   oc get pods -n resource-test
    
    # Check resource allocation
-   oc describe pod -l app=memory-test-app -n memory-test
+   oc describe pod -l app=resource-test-app -n resource-test
    
    # Get the application URL
-   oc get route memory-test-app-route -n memory-test
+   oc get route resource-test-app-route -n resource-test
    ```
 
 ### Option 2: Build Locally and Push
@@ -67,21 +106,27 @@ A simple Python application that consumes exactly 2GB of memory for testing Open
    podman build -t memory-test-app:latest .
    
    # Tag for your registry
-   podman tag memory-test-app:latest <your-registry>/memory-test-app:latest
+   podman tag resource-test-app:latest <your-registry>/resource-test-app:latest
    
    # Push to registry
-   podman push <your-registry>/memory-test-app:latest
+   podman push <your-registry>/resource-test-app:latest
    ```
 
 2. **Update deployment.yaml:**
    ```bash
    # Edit deployment.yaml to use your image
-   sed -i 's|memory-test-app:latest|<your-registry>/memory-test-app:latest|' deployment.yaml
+   sed -i 's|resource-test-app:latest|<your-registry>/resource-test-app:latest|' deployment.yaml
    ```
 
 3. **Deploy to OpenShift:**
    ```bash
+   # Create namespace first
+   oc apply -f namespace.yaml
+   
+   # Deploy application components
    oc apply -f deployment.yaml
+   oc apply -f service.yaml
+   oc apply -f route.yaml
    ```
 
 ## Resource Configuration
@@ -199,23 +244,29 @@ oc exec -it deployment/memory-test-app -n memory-test -- /bin/bash
 To remove the application and all resources:
 
 ```bash
-# Delete all resources
-oc delete namespace memory-test
+# Delete entire namespace (removes all resources)
+oc delete namespace resource-test
 
-# Or delete individual components
+# Or delete individual components in reverse order
+oc delete -f route.yaml
+oc delete -f service.yaml
 oc delete -f deployment.yaml
 oc delete -f buildconfig.yaml
+oc delete -f namespace.yaml
 ```
 
 ## File Structure
 
 ```
-memory-test-app/
-├── app.py              # Main Python application
+resource-test-app/
+├── app.py              # Main Python application (memory + CPU testing)
 ├── requirements.txt    # Python dependencies
 ├── Dockerfile         # Container build instructions
-├── buildconfig.yaml   # OpenShift build configuration
+├── namespace.yaml     # Namespace definition
+├── buildconfig.yaml   # OpenShift build configuration and image stream
 ├── deployment.yaml    # OpenShift deployment with resource limits
+├── service.yaml       # Kubernetes service definition
+├── route.yaml         # OpenShift route for external access
 └── README.md          # This file
 ```
 

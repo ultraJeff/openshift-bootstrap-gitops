@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resource-test-app-service
+  namespace: resource-test
+  labels:
+    app: resource-test-app
+spec:
+  selector:
+    app: resource-test-app
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  type: ClusterIP

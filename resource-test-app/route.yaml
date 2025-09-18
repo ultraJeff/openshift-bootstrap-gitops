@@ -1,0 +1,17 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: resource-test-app-route
+  namespace: resource-test
+  labels:
+    app: resource-test-app
+spec:
+  to:
+    kind: Service
+    name: resource-test-app-service
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

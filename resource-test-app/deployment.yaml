@@ -1,35 +1,26 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: memory-test
-  labels:
-    name: memory-test
-    app: memory-test-app
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: memory-test-app
-  namespace: memory-test
+  name: resource-test-app
+  namespace: resource-test
   labels:
-    app: memory-test-app
+    app: resource-test-app
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: memory-test-app
+      app: resource-test-app
   template:
     metadata:
       labels:
-        app: memory-test-app
+        app: resource-test-app
         version: v1
     spec:
       containers:
-      - name: memory-test-app
-        image: memory-test-app:latest
+      - name: resource-test-app
+        image: resource-test-app:latest
         ports:
         - containerPort: 8080
           name: http
@@ -83,39 +74,3 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: memory-test-app-service
-  namespace: memory-test
-  labels:
-    app: memory-test-app
-spec:
-  selector:
-    app: memory-test-app
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-    protocol: TCP
-  type: ClusterIP
-
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: memory-test-app-route
-  namespace: memory-test
-  labels:
-    app: memory-test-app
-spec:
-  to:
-    kind: Service
-    name: memory-test-app-service
-  port:
-    targetPort: http
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
