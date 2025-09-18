@@ -1,0 +1,92 @@
+# WARP.md - Project-specific guidance for WARP terminal AI
+# Keep this in version control to provide context to WARP
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# OpenShift/Kubernetes specific
+# Keep all manifests and configs in version control
+# But exclude any generated or temporary files
+*.generated.yaml
+*.tmp.yaml
+cluster-configs/**/*.generated.yaml
+
+# Secrets and sensitive files (if any exist)
+*.key
+*.pem
+*.crt
+*-secret.yaml
+*-secrets.yaml
+kubeconfig*
+.kubeconfig*
+auth/
+
+# Build artifacts
+build/
+dist/
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Dependencies (if any)
+node_modules/
+*.lock
+
+# Python (for any utility scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Local testing and development
+local/
+test-output/
+.test/
+.temp/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Container build contexts (if any)
+Dockerfile.local
+docker-compose.override.yml
