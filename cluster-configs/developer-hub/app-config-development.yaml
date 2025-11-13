@@ -1,0 +1,44 @@
+# RHDH Application Configuration - contains Backstage app-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    rhdh.redhat.com/backstage-name: developer-hub
+  labels:
+    rhdh.redhat.com/ext-config-sync: "true"
+  name: app-config-rhdh
+  namespace: rhdh
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: ${BACKEND_URL}
+    auth:
+      environment: development
+      externalAccess:
+      - options:
+          subject: orchestrator
+          token: ${BACKEND_SECRET}
+        type: static
+      providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
+      session:
+        secret:
+          $env: BACKEND_SECRET
+    backend:
+      auth:
+        keys:
+        - secret: ${BACKEND_SECRET}
+      cors:
+        origin: ${BACKEND_URL}
+      baseUrl: ${BACKEND_URL}
+    integrations:
+      github:
+        - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
+          apps:
+            - appId: ${GITHUB_INTEGRATION_APP_ID}
+              clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
+              clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
+              privateKey: |
+                ${GITHUB_INTEGRATION_PRIVATE_KEY_FILE}

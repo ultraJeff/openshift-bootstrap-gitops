@@ -27,6 +27,11 @@ This directory contains YAML manifests to bootstrap a new OpenShift cluster with
 ### Logging (`logging/`)
 - **Log Retention Policies**: Configures kubelet and journald log rotation
 
+### Keycloak (`keycloak/`)
+- **Red Hat build of Keycloak Operator**: Installs the Keycloak operator
+- **Keycloak Instance**: Deploys Keycloak with PostgreSQL database
+- **RHDH Client Configuration**: Includes pre-configured OIDC client for Red Hat Developer Hub integration
+
 ## Deployment Instructions
 
 ### Option 1: Deploy Everything at Once
@@ -61,6 +66,11 @@ oc apply -k cluster-configs/acm/
 oc apply -k cluster-configs/logging/
 ```
 
+6. **Keycloak**:
+```bash
+oc apply -k cluster-configs/keycloak/
+```
+
 ## Post-Deployment Verification
 
 ### Check Storage
@@ -92,12 +102,41 @@ oc get subscription -n open-cluster-management
 oc get multiclusterhub -n open-cluster-management
 ```
 
+### Check Keycloak
+```bash
+# Verify Keycloak Operator
+oc get subscription.operators.coreos.com -n keycloak
+
+# Check Keycloak instance
+oc get keycloak -n keycloak
+
+# Verify all Keycloak resources
+oc get pods,statefulset,route -n keycloak
+
+# Get admin credentials
+oc get secret keycloak-initial-admin -n keycloak -o jsonpath='{.data.username}' | base64 -d && echo
+oc get secret keycloak-initial-admin -n keycloak -o jsonpath='{.data.password}' | base64 -d && echo
+```
+
 ## Access URLs
 
 After deployment, you can access:
 
 - **ArgoCD**: `https://openshift-gitops-server-openshift-gitops.apps.<cluster-domain>`
 - **ACM Console**: Available through the OpenShift Console under "All Clusters"
+- **Keycloak**: Get the URL with `oc get route -n keycloak`
+
+### Keycloak RHDH Client Configuration
+
+To integrate Keycloak with Red Hat Developer Hub:
+
+1. Log into Keycloak admin console using the credentials from `keycloak-initial-admin` secret
+2. Create a new realm or use the master realm
+3. Import the OIDC client configuration:
+   - Navigate to **Clients** > **Import client**
+   - Select the file `cluster-configs/keycloak/rhdh.json`
+   - Update the `redirectUris` and `webOrigins` to match your RHDH instance URL
+   - Note the client secret for configuring RHDH
 
 ## Customization
 

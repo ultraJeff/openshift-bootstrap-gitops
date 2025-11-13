@@ -5,8 +5,14 @@ metadata:
   name: developer-hub-configs
 
 resources:
+- namespace.yaml
 - rhdh-operator.yaml
 - rhdh-instance.yaml
+- keycloak-secrets.yaml
+- rhdh-secrets.yaml
+- dynamic-plugins.yaml
+- dynamic-plugins-root-pvc.yaml
+- app-config-production.yaml
 
 commonLabels:
   config.openshift.io/component: developer-hub

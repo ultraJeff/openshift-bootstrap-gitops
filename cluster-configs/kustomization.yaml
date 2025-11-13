@@ -28,6 +28,9 @@ resources:
 # Red Hat Advanced Cluster Security (ACS/RHACS)
 - acs/
 
+# Keycloak (Red Hat build of Keycloak)
+- keycloak/
+
 commonLabels:
   config.openshift.io/bootstrap: "true"
   config.openshift.io/managed-by: gitops

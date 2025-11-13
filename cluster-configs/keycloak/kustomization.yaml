@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: keycloak-configs
+
+resources:
+- keycloak-operator.yaml
+- keycloak-instance.yaml
+
+commonLabels:
+  config.openshift.io/component: keycloak
+  config.openshift.io/managed-by: gitops
