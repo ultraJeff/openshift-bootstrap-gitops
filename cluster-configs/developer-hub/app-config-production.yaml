@@ -68,7 +68,7 @@ data:
                 minutes: 15
         githubOrg:
           id: production
-          githubUrl: "${GITHUB_INTEGRATION_HOST_DOMAIN}"
+          githubUrl: "https://github.com"
           orgs:
             - ${GITHUB_INTEGRATION_ORGANIZATION}
           schedule:
@@ -80,7 +80,7 @@ data:
               minutes: 15
     integrations:
       github:
-        - host: "${GITHUB_INTEGRATION_HOST_DOMAIN}"
+        - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
           apps:
             - appId: ${GITHUB_INTEGRATION_APP_ID}
               clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
