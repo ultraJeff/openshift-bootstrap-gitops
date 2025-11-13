@@ -16,8 +16,6 @@ data:
     signInPage: oidc
     auth:
       environment: production
-      session:
-        secret: ${BACKEND_SECRET}
       providers:
         oidc:
           production:
@@ -25,6 +23,11 @@ data:
             clientId: ${KEYCLOAK_CLIENT_ID}
             clientSecret: ${KEYCLOAK_CLIENT_SECRET}
             prompt: auto
+        github:
+          production:
+            clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
+            clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
+            disableIdentityResolution: true
       externalAccess:
       - options:
           subject: orchestrator
@@ -53,19 +56,31 @@ data:
                 minutes: 3
               initialDelay:
                 seconds: 15
-        # github:
-        #   providerId:
-        #     organization: "${GITHUB_INTEGRATION_ORGANIZATION}"
-        #     schedule:
-        #       frequency:
-        #         minutes: 30
-        #       initialDelay:
-        #         seconds: 15
-        #       timeout:
-        #         minutes: 15
+        github:
+          providerId:
+            organization: "${GITHUB_INTEGRATION_ORGANIZATION}"
+            schedule:
+              frequency:
+                minutes: 30
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
+        githubOrg:
+          id: production
+          githubUrl: "${GITHUB_INTEGRATION_HOST_DOMAIN}"
+          orgs:
+            - ${GITHUB_INTEGRATION_ORGANIZATION}
+          schedule:
+            frequency:
+              minutes: 30
+            initialDelay:
+              seconds: 15
+            timeout:
+              minutes: 15
     integrations:
       github:
-        - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
+        - host: "${GITHUB_INTEGRATION_HOST_DOMAIN}"
           apps:
             - appId: ${GITHUB_INTEGRATION_APP_ID}
               clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
