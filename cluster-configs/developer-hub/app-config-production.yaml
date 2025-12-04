@@ -15,6 +15,9 @@ data:
       baseUrl: ${BACKEND_URL}
     signInPage: oidc
     auth:
+      # Need this for OIDC Keycloak login
+      session:
+        secret: ${BACKEND_SECRET}
       environment: production
       providers:
         oidc:
@@ -57,7 +60,7 @@ data:
               initialDelay:
                 seconds: 15
         github:
-          providerId:
+          default:
             organization: "${GITHUB_INTEGRATION_ORGANIZATION}"
             schedule:
               frequency:
@@ -67,17 +70,17 @@ data:
               timeout:
                 minutes: 15
         githubOrg:
-          id: production
-          githubUrl: "https://github.com"
-          orgs:
-            - ${GITHUB_INTEGRATION_ORGANIZATION}
-          schedule:
-            frequency:
-              minutes: 30
-            initialDelay:
-              seconds: 15
-            timeout:
-              minutes: 15
+          default:
+            githubUrl: "https://github.com"
+            orgs:
+              - ${GITHUB_INTEGRATION_ORGANIZATION}
+            schedule:
+              frequency:
+                minutes: 30
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
     integrations:
       github:
         - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
