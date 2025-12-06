@@ -6,7 +6,10 @@ metadata:
 
 resources:
 - gitops-operator.yaml
+- argocd-instance.yaml
+- argocd-secret-patch-job.yaml
 
-commonLabels:
-  config.openshift.io/component: gitops
-  config.openshift.io/managed-by: gitops
+labels:
+- pairs:
+    config.openshift.io/component: gitops
+    config.openshift.io/managed-by: gitops
