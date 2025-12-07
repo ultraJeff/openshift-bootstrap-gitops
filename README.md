@@ -8,7 +8,7 @@ This repository contains standardized configurations for bootstrapping new OpenS
 ├── cluster-configs/          # Cluster-level configurations
 │   ├── acm/                 # Advanced Cluster Management
 │   ├── developer-hub/       # Red Hat Developer Hub (Backstage)
-│   ├── gitops/              # OpenShift GitOps (ArgoCD)
+│   ├── gitops/              # OpenShift GitOps (ArgoCD) (TODO: add second ArgoCD instance for apps)
 │   ├── logging/             # Log management and retention
 │   ├── security/            # Security policies, RBAC, and authentication
 │   ├── storage/             # LVM Storage, StorageClass, Image Registry

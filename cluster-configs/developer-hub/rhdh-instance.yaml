@@ -35,6 +35,9 @@ spec:
       secrets:
       - name: my-rhdh-secrets
       - name: keycloak-secrets
+      # Inject the ARGOCD_URL, ARGOCD_USERNAME,
+      # and ARGOCD_PASSWORD into the pod as environment variables
+      - name: argocd-secrets
     
     # Single replica for development
     replicas: 1

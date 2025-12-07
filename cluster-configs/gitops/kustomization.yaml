@@ -8,6 +8,8 @@ resources:
 - gitops-operator.yaml
 - argocd-instance.yaml
 - argocd-secret-patch-job.yaml
+- appproject-a-project.yaml
+- argocd-cluster-admin-binding.yaml
 
 labels:
 - pairs:
