@@ -18,8 +18,6 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-kubernetes-dynamic
-        disabled: false
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
