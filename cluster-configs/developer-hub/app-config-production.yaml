@@ -109,3 +109,9 @@ data:
               authProvider: serviceAccount
               skipTLSVerify: true
               skipMetricsLookup: true
+    permission:
+      enabled: true
+      rbac:
+        admin:
+          users:
+            - name: user:default/admin
