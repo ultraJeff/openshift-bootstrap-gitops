@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rbac-policies
+  namespace: rhdh
+data:
+  rbac-policies.csv: |
+    p, role:default/location_read, catalog.entity.read, read, allow
+    p, role:default/location_read, catalog.location.read, read, allow
+    p, role:default/platformengineer, catalog.entity.create, create, allow
+    p, role:default/platformengineer, catalog.entity.refresh, update, allow
+    p, role:default/platformengineer, catalog.entity.delete, delete, allow
+    p, role:default/platformengineer, catalog.location.create, create, allow
+    p, role:default/platformengineer, catalog.location.delete, delete, allow
+    p, role:default/scaffolder_execute, scaffolder.action.execute, use, allow
+    p, role:default/scaffolder_execute, scaffolder.template.parameter.read, read, allow
+    p, role:default/scaffolder_execute, scaffolder.template.step.read, read, allow
+    p, role:default/scaffolder_execute, scaffolder.task.create, create, allow
+    p, role:default/scaffolder_execute, scaffolder.task.cancel, use, allow
+    p, role:default/scaffolder_execute, scaffolder.task.read, read, allow
+    p, role:default/scaffolder_execute, catalog.location.create, create, allow
+    p, role:default/plugins, topology.view.read, read, allow
+    p, role:default/plugins, tekton.view.read, read, allow
+    p, role:default/plugins, argocd.view.read, read, allow
+    p, role:default/plugins, kubernetes.proxy, use, allow
+    g, user:default/admin, role:default/location_read
+    g, user:default/admin, role:default/platformengineer
+    g, user:default/admin, role:default/scaffolder_execute
+    g, user:default/admin, role:default/plugins
+    g, group:default/rhdh-users, role:default/location_read
+    g, group:default/rhdh-users, role:default/scaffolder_execute
+    g, group:default/rhdh-users, role:default/plugins
+

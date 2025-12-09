@@ -10,9 +10,11 @@ resources:
 - rhdh-instance.yaml
 - keycloak-secrets.yaml
 - rhdh-secrets.yaml
+- argocd-secrets.yaml
 - dynamic-plugins.yaml
 - dynamic-plugins-root-pvc.yaml
 - app-config-production.yaml
+- rbac-policies.yaml
 
 commonLabels:
   config.openshift.io/component: developer-hub

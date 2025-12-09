@@ -46,12 +46,16 @@ data:
         type: static
     backend:
       auth:
-        keys:
-        - secret: ${BACKEND_SECRET}
+        externalAccess:
+          - type: static
+            options:
+              token: ${BACKEND_SECRET}
+              subject: external-access
       cors:
         origin: ${BACKEND_URL}
       baseUrl: ${BACKEND_URL}
     catalog:
+      locations: []
       providers:
         keycloakOrg:
           default:
@@ -109,9 +113,13 @@ data:
               authProvider: serviceAccount
               skipTLSVerify: true
               skipMetricsLookup: true
+    extensions:
+      installation:
+        enabled: true
     permission:
       enabled: true
       rbac:
+        policies-csv-file: /opt/app-root/src/rbac-policies.csv
         admin:
           users:
             - name: user:default/admin
