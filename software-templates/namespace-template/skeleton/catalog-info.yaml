@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: ${{ values.namespaceName }}
+  description: ${{ values.description | default('Namespace created by Backstage') }}
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/${{ values.owner }}/namespaces"
+  labels:
+    environment: ${{ values.environment }}
+spec:
+  type: namespace
+  owner: ${{ values.owner }}
+  system: infrastructure
+
