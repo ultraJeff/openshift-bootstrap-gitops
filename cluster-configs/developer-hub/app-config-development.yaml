@@ -42,3 +42,7 @@ data:
               clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
               privateKey: |
                 ${GITHUB_INTEGRATION_PRIVATE_KEY_FILE}
+    catalog:
+      locations:
+        - type: url
+          target: https://raw.githubusercontent.com/redhat-appstudio/tssc-sample-templates/release-v1.8.x/all.yaml

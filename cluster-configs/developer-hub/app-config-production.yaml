@@ -54,8 +54,13 @@ data:
       cors:
         origin: ${BACKEND_URL}
       baseUrl: ${BACKEND_URL}
+      reading:
+        allow:
+          - host: raw.githubusercontent.com
     catalog:
-      locations: []
+      locations:
+        - type: url
+          target: https://raw.githubusercontent.com/redhat-appstudio/tssc-sample-templates/release-v1.8.x/all.yaml
       providers:
         keycloakOrg:
           default:
