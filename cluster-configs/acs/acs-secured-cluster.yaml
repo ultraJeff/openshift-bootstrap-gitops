@@ -36,7 +36,7 @@ spec:
           cpu: "50m"          # Minimal CPU for SNO
           memory: "320Mi"     # As per Red Hat docs minimum
         limits:
-          cpu: "200m"         # Reduced limits for SNO  
+          cpu: "200m"         # Reduced limits for SNO
           memory: "1Gi"       # As per Red Hat docs limit
     taintToleration: "TolerateTaints"  # Tolerate taints for SNO deployment
   sensor:

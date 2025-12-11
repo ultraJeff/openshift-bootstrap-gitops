@@ -29,7 +29,7 @@ spec:
       configMaps:
       - name: app-config-rhdh
       mountPath: /opt/app-root/src
-    
+
     # Environment variables from Secret
     extraEnvs:
       secrets:
@@ -38,16 +38,16 @@ spec:
       # Inject the ARGOCD_URL, ARGOCD_USERNAME,
       # and ARGOCD_PASSWORD into the pod as environment variables
       - name: argocd-secrets
-    
+
     # Mount RBAC policies file
     extraFiles:
       mountPath: /opt/app-root/src
       configMaps:
         - name: rbac-policies
-    
+
     # Single replica for development
     replicas: 1
-    
+
     # Route configuration
     route:
       enabled: true

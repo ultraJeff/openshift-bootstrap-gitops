@@ -25,7 +25,7 @@ spec:
         - containerPort: 8080
           name: http
           protocol: TCP
-        
+
         # Resource limits and requests - exactly 2GB memory
         resources:
           limits:
@@ -34,12 +34,12 @@ spec:
           requests:
             memory: "2Gi"     # 2GB request - guaranteed allocation
             cpu: "500m"       # 0.5 CPU core request
-        
+
         # Environment variables
         env:
         - name: PORT
           value: "8080"
-        
+
         # Health checks
         livenessProbe:
           httpGet:
@@ -49,7 +49,7 @@ spec:
           periodSeconds: 30
           timeoutSeconds: 10
           failureThreshold: 3
-        
+
         readinessProbe:
           httpGet:
             path: /ready
@@ -58,7 +58,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         # Security context for OpenShift
         securityContext:
           allowPrivilegeEscalation: false
@@ -68,7 +68,7 @@ spec:
           capabilities:
             drop:
             - ALL
-      
+
       # Pod security settings
       securityContext:
         runAsNonRoot: true

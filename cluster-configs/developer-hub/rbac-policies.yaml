@@ -30,4 +30,3 @@ data:
     g, group:default/rhdh-users, role:default/location_read
     g, group:default/rhdh-users, role:default/scaffolder_execute
     g, group:default/rhdh-users, role:default/plugins
-

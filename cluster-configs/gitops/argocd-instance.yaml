@@ -129,4 +129,3 @@ spec:
     provider: dex
   tls:
     ca: {}
-

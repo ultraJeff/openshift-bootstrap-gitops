@@ -81,7 +81,7 @@ A comprehensive Python application for testing OpenShift memory and CPU resource
    ```bash
    # Create service for internal communication
    oc apply -f service.yaml
-   
+
    # Create route for external access
    oc apply -f route.yaml
    ```
@@ -90,10 +90,10 @@ A comprehensive Python application for testing OpenShift memory and CPU resource
    ```bash
    # Check pod status
    oc get pods -n resource-test
-   
+
    # Check resource allocation
    oc describe pod -l app=resource-test-app -n resource-test
-   
+
    # Get the application URL
    oc get route resource-test-app-route -n resource-test
    ```
@@ -104,10 +104,10 @@ A comprehensive Python application for testing OpenShift memory and CPU resource
    ```bash
    # Build the image
    podman build -t memory-test-app:latest .
-   
+
    # Tag for your registry
    podman tag resource-test-app:latest <your-registry>/resource-test-app:latest
-   
+
    # Push to registry
    podman push <your-registry>/resource-test-app:latest
    ```
@@ -122,7 +122,7 @@ A comprehensive Python application for testing OpenShift memory and CPU resource
    ```bash
    # Create namespace first
    oc apply -f namespace.yaml
-   
+
    # Deploy application components
    oc apply -f deployment.yaml
    oc apply -f service.yaml
@@ -202,12 +202,12 @@ oc logs -f -l app=memory-test-app -n memory-test
 
 ### Common Issues
 
-1. **Pod OOMKilled**: 
+1. **Pod OOMKilled**:
    - The application exceeded the 2GB memory limit
    - Check events: `oc get events -n memory-test`
    - Increase limit if needed or investigate memory leaks
 
-2. **Pod Pending**: 
+2. **Pod Pending**:
    - Not enough memory available on nodes to satisfy 2GB request
    - Check node resources: `oc describe nodes`
    - Consider lowering memory request for testing

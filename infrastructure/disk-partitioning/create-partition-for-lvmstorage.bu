@@ -11,8 +11,8 @@ storage:
   - device: /dev/nvme0n1  # ADJUST THIS: update to match your server's drive (e.g., /dev/sda, /dev/nvme0n1, /dev/vda)
     partitions:
     - label: lvmstorage
-      # applying a label to the partition allows us to use nice names like 
+      # applying a label to the partition allows us to use nice names like
       # /dev/disk/by-partlabel/lvmstorage instead of /dev/nvme0n1p3
-      start_mib: 150000  # ADJUST THIS: let CoreOS use the first 150GB 
+      start_mib: 150000  # ADJUST THIS: let CoreOS use the first 150GB
                          # (minimum 25000 MiB, recommend 120000 MiB or more)
       size_mib: 0        # ADJUST THIS: any size, or "0" to use the rest of the disk

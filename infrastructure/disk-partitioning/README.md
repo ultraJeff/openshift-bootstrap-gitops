@@ -29,7 +29,7 @@ This directory contains configurations for partitioning disks during OpenShift i
 ```
 /dev/nvme0n1
 ├── /dev/nvme0n1p1 - EFI System (existing)
-├── /dev/nvme0n1p2 - Boot (existing)  
+├── /dev/nvme0n1p2 - Boot (existing)
 ├── /dev/nvme0n1p3 - Root filesystem (limited to 150GB)
 └── /dev/nvme0n1p4 - LVM Storage (rest of disk)
 ```

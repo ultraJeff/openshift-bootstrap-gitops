@@ -15,4 +15,3 @@ spec:
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
-

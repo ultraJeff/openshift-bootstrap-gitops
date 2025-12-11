@@ -34,3 +34,4 @@ resources:
 commonLabels:
   config.openshift.io/bootstrap: "true"
   config.openshift.io/managed-by: gitops
+  argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
