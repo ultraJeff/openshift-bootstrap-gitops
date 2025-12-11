@@ -7,6 +7,7 @@ metadata:
 resources:
 - keycloak-operator.yaml
 - keycloak-instance.yaml
+- keycloak-db-secret.yaml
 
 commonLabels:
   config.openshift.io/component: keycloak

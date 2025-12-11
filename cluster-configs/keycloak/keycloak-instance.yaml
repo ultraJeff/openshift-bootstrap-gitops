@@ -22,16 +22,6 @@ spec:
   ingress:
     enabled: true
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: keycloak-db-secret
-  namespace: keycloak
-type: Opaque
-stringData:
-  username: testuser
-  password: testpassword
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -56,9 +46,15 @@ spec:
           name: cache-volume
         env:
         - name: POSTGRES_USER
-          value: testuser
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-secret
+              key: username
         - name: POSTGRES_PASSWORD
-          value: testpassword
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-secret
+              key: password
         - name: PGDATA
           value: /data/pgdata
         - name: POSTGRES_DB

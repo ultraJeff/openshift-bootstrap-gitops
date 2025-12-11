@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-yaml
+        args: ['--allow-multiple-documents']
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+  - repo: https://github.com/k8s-at-home/sops-pre-commit
+    rev: v2.1.1
+    hooks:
+      - id: forbid-secrets
+  - repo: https://github.com/qoomon/git-conventional-commits
+    rev: v2.7.2
+    hooks:
+    -   id: conventional-commits
