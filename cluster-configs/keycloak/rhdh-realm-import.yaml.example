@@ -1,0 +1,70 @@
+# Template for RHDH Keycloak Realm Import
+#
+# To use:
+# 1. Copy this file to rhdh-realm-import.yaml (it's gitignored)
+# 2. Replace <RHDH_CLIENT_SECRET> with your actual client secret
+# 3. Ensure the secret matches KEYCLOAK_CLIENT_SECRET in:
+#    cluster-configs/developer-hub/keycloak-secrets.yaml (base64 decoded)
+# 4. Apply with: oc apply -f rhdh-realm-import.yaml
+---
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: rhdh-realm
+  namespace: keycloak
+spec:
+  keycloakCRName: keycloak
+  realm:
+    id: rhdh
+    realm: rhdh
+    displayName: "RHDH Realm"
+    enabled: true
+    sslRequired: external
+    loginWithEmailAllowed: true
+    duplicateEmailsAllowed: false
+    # Groups
+    groups:
+      - name: rhdh-users
+        path: /rhdh-users
+    # Clients
+    clients:
+      - clientId: rhdh
+        name: RHDH Client
+        description: Red Hat Developer Hub OIDC Client
+        enabled: true
+        protocol: openid-connect
+        publicClient: false
+        standardFlowEnabled: true
+        directAccessGrantsEnabled: true
+        serviceAccountsEnabled: true
+        # IMPORTANT: Replace <RHDH_CLIENT_SECRET> with actual value
+        # Must match KEYCLOAK_CLIENT_SECRET in keycloak-secrets.yaml (base64 decoded)
+        secret: "<RHDH_CLIENT_SECRET>"
+        redirectUris:
+          - "https://backstage-developer-hub-rhdh.apps.tallgeese.ultra.lab/api/auth/oidc/handler/frame"
+        webOrigins:
+          - "https://backstage-developer-hub-rhdh.apps.tallgeese.ultra.lab"
+        defaultClientScopes:
+          - web-origins
+          - acr
+          - profile
+          - roles
+          - email
+        optionalClientScopes:
+          - address
+          - phone
+          - offline_access
+          - microprofile-jwt
+    # Service account roles for the rhdh client
+    # This allows RHDH to query users/groups from Keycloak
+    scopeMappings:
+      - clientScope: offline_access
+        roles:
+          - offline_access
+    clientScopeMappings:
+      realm-management:
+        - client: rhdh
+          roles:
+            - view-users
+            - query-groups
+            - query-users

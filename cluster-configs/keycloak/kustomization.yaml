@@ -8,6 +8,8 @@ resources:
 - keycloak-operator.yaml
 - keycloak-instance.yaml
 - keycloak-db-secret.yaml
+# rhdh-realm-import.yaml is gitignored (contains secrets)
+# Copy from rhdh-realm-import.yaml.example and apply manually
 
 commonLabels:
   config.openshift.io/component: keycloak

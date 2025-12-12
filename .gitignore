@@ -41,6 +41,8 @@ cluster-configs/**/*.generated.yaml
 *.crt
 *-secret.yaml
 *-secrets.yaml
+# Keycloak realm imports contain client secrets
+cluster-configs/keycloak/rhdh-realm-import.yaml
 kubeconfig*
 .kubeconfig*
 auth/
