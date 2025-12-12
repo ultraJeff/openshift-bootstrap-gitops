@@ -22,6 +22,39 @@ spec:
     sslRequired: external
     loginWithEmailAllowed: true
     duplicateEmailsAllowed: false
+    # Users
+    users:
+      - username: admin
+        enabled: true
+        email: admin@ultra.lab
+        firstName: Admin
+        lastName: User
+        credentials:
+          - type: password
+            value: admin
+            temporary: false
+        groups:
+          - /rhdh-users
+      - username: user1
+        enabled: true
+        email: user1@ultra.lab
+        firstName: User
+        lastName: One
+        credentials:
+          - type: password
+            value: user1
+            temporary: false
+        groups:
+          - /rhdh-users
+      # Service account for RHDH client - needs realm-management roles
+      - username: service-account-rhdh
+        enabled: true
+        serviceAccountClientId: rhdh
+        clientRoles:
+          realm-management:
+            - view-users
+            - query-groups
+            - query-users
     # Groups
     groups:
       - name: rhdh-users
@@ -55,16 +88,3 @@ spec:
           - phone
           - offline_access
           - microprofile-jwt
-    # Service account roles for the rhdh client
-    # This allows RHDH to query users/groups from Keycloak
-    scopeMappings:
-      - clientScope: offline_access
-        roles:
-          - offline_access
-    clientScopeMappings:
-      realm-management:
-        - client: rhdh
-          roles:
-            - view-users
-            - query-groups
-            - query-users
