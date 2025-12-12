@@ -21,6 +21,7 @@ spec:
     hostname: sso.apps.tallgeese.ultra.lab
   ingress:
     enabled: true
+    className: openshift-default
 ---
 apiVersion: apps/v1
 kind: StatefulSet

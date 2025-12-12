@@ -16,9 +16,9 @@ spec:
         name: thin-pool
         sizePercent: 90
         overprovisionRatio: 10
-      # Optional: specify node selector if you want to limit to specific nodes
-      # nodeSelector:
-      #   kubernetes.io/hostname: "node-name"
+      # Note: nodeSelector can't be changed after LVMCluster creation
+      # To add new nodes, label them with: storage.openshift.io/lvmstorage=true
+      # and ensure they have the /dev/disk/by-partlabel/lvmstorage partition
 ---
 # Optional: Create a default storage class
 apiVersion: storage.k8s.io/v1

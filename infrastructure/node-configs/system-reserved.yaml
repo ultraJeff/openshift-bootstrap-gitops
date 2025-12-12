@@ -1,0 +1,39 @@
+---
+# System resource reservation for Master nodes
+# Prevents system processes from being OOM killed when node is under pressure
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: system-reserved-master
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/master: ""
+  kubeletConfig:
+    systemReserved:
+      cpu: "500m"
+      memory: "2Gi"
+      ephemeral-storage: "1Gi"
+    kubeReserved:
+      cpu: "500m"
+      memory: "1Gi"
+      ephemeral-storage: "1Gi"
+---
+# System resource reservation for Worker nodes
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: system-reserved-worker
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ""
+  kubeletConfig:
+    systemReserved:
+      cpu: "500m"
+      memory: "2Gi"
+      ephemeral-storage: "1Gi"
+    kubeReserved:
+      cpu: "500m"
+      memory: "1Gi"
+      ephemeral-storage: "1Gi"

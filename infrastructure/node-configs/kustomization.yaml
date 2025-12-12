@@ -8,6 +8,7 @@ resources:
 - kubelet-log-rotation.yaml
 - journald-retention.yaml
 - image-gc.yaml
+- system-reserved.yaml
 
 commonLabels:
   config.openshift.io/component: node-config
