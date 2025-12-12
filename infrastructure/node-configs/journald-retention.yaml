@@ -22,8 +22,8 @@ spec:
             MaxRetentionSec=30d
             # Rotate log files daily
             MaxFileSec=1d
-            # Keep at least 15GB free on disk
-            SystemKeepFree=15G
+            # Keep at least 25GB free on disk
+            SystemKeepFree=25G
 ---
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
@@ -49,5 +49,5 @@ spec:
             MaxRetentionSec=30d
             # Rotate log files daily
             MaxFileSec=1d
-            # Keep at least 15GB free on disk
-            SystemKeepFree=15G
+            # Keep at least 25GB free on disk
+            SystemKeepFree=25G

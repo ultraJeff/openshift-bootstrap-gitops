@@ -1,0 +1,34 @@
+---
+# Image Garbage Collection for Master nodes
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: image-gc-master
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/master: ""
+  kubeletConfig:
+    # Start garbage collection when disk usage exceeds 70%
+    imageGCHighThresholdPercent: 70
+    # Stop garbage collection when disk usage drops to 60%
+    imageGCLowThresholdPercent: 60
+    # Minimum age of unused images before they can be garbage collected
+    imageMinimumGCAge: "5m"
+---
+# Image Garbage Collection for Worker nodes
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: image-gc-worker
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ""
+  kubeletConfig:
+    # Start garbage collection when disk usage exceeds 70%
+    imageGCHighThresholdPercent: 70
+    # Stop garbage collection when disk usage drops to 60%
+    imageGCLowThresholdPercent: 60
+    # Minimum age of unused images before they can be garbage collected
+    imageMinimumGCAge: "5m"

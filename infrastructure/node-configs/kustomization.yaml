@@ -2,12 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 metadata:
-  name: logging-configs
+  name: node-configs
 
 resources:
 - kubelet-log-rotation.yaml
 - journald-retention.yaml
+- image-gc.yaml
 
 commonLabels:
-  config.openshift.io/component: logging
+  config.openshift.io/component: node-config
   config.openshift.io/managed-by: gitops

@@ -92,3 +92,7 @@ test-output/
 # Container build contexts (if any)
 Dockerfile.local
 docker-compose.override.yml
+
+# Hardware Config Files
+nodes-config.yaml
+*.iso

@@ -4,7 +4,6 @@ kind: MachineConfig
 metadata:
   labels:
     machineconfiguration.openshift.io/role: master  # for Single Node OpenShift (SNO) and 3-node compact clusters
-    #machineconfiguration.openshift.io/role: worker # only for clusters with dedicated workers
   name: 98-create-a-partition-for-lvmstorage
 spec:
   config:

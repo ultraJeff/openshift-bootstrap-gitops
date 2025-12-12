@@ -16,9 +16,6 @@ resources:
 # Advanced Cluster Management (ACM)
 - acm/
 
-# Logging configurations
-- logging/
-
 # Security configurations (RBAC, authentication)
 - security/
 
