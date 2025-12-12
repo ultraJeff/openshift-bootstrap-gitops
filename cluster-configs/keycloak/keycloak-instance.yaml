@@ -43,7 +43,7 @@ spec:
         image: postgres:15
         volumeMounts:
         - mountPath: /data
-          name: cache-volume
+          name: postgres-data
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -59,9 +59,15 @@ spec:
           value: /data/pgdata
         - name: POSTGRES_DB
           value: keycloak
-      volumes:
-      - name: cache-volume
-        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: lvms-vg1
+      resources:
+        requests:
+          storage: 5Gi
 ---
 apiVersion: v1
 kind: Service
@@ -71,7 +77,7 @@ metadata:
 spec:
   selector:
     app: postgresql-db
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 5432
     targetPort: 5432
