@@ -28,6 +28,9 @@ resources:
 # Keycloak (Red Hat build of Keycloak)
 - keycloak/
 
+# Network Observability (NetObserv)
+- networking/
+
 commonLabels:
   config.openshift.io/bootstrap: "true"
   config.openshift.io/managed-by: gitops

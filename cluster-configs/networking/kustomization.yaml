@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: networking-configs
+
+resources:
+# MinIO object storage for Loki
+- minio.yaml
+- minio-secrets.yaml
+
+# Loki Operator
+- loki-operator.yaml
+
+# LokiStack for NetObserv
+- lokistack.yaml
+
+# Network Observability Operator
+- netobserv-operator.yaml
+- flowcollector.yaml
+
+commonLabels:
+  config.openshift.io/component: networking
+  config.openshift.io/managed-by: gitops

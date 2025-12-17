@@ -1,0 +1,95 @@
+---
+apiVersion: flows.netobserv.io/v1beta2
+kind: FlowCollector
+metadata:
+  name: cluster
+spec:
+  # Deploy in dedicated namespace
+  namespace: netobserv
+
+  # eBPF agent configuration
+  agent:
+    type: eBPF
+    ebpf:
+      # Sampling rate: 1 in 50 packets (balance between visibility and overhead)
+      sampling: 50
+      # Privileged mode required for full packet inspection
+      privileged: false
+      # Features to enable
+      features:
+        - DNSTracking
+        - FlowRTT
+        - PacketDrop
+
+  # Flow processor configuration
+  processor:
+    # Log level for the processor
+    logLevel: info
+    # Metrics configuration
+    metrics:
+      server:
+        port: 9102
+        tls:
+          type: Disabled
+      # Metrics to include for console features
+      includeList:
+        # Flow counts
+        - namespace_flows_total
+        - workload_flows_total
+        - node_flows_total
+        # Bytes (egress/ingress)
+        - namespace_egress_bytes_total
+        - namespace_ingress_bytes_total
+        - workload_egress_bytes_total
+        - workload_ingress_bytes_total
+        - node_egress_bytes_total
+        - node_ingress_bytes_total
+        # Packets
+        - namespace_egress_packets_total
+        - namespace_ingress_packets_total
+        - workload_egress_packets_total
+        - workload_ingress_packets_total
+        # Drops
+        - namespace_drop_packets_total
+        - namespace_drop_bytes_total
+        - workload_drop_packets_total
+        - workload_drop_bytes_total
+        # RTT (round-trip time)
+        - namespace_rtt_seconds
+        - workload_rtt_seconds
+        - node_rtt_seconds
+        # DNS latency
+        - namespace_dns_latency_seconds
+        - workload_dns_latency_seconds
+        - node_dns_latency_seconds
+
+  # Loki configuration for flow log storage
+  loki:
+    enable: true
+    mode: LokiStack
+    lokiStack:
+      name: netobserv-loki
+
+  # Console plugin configuration
+  consolePlugin:
+    enable: true
+    register: true
+    # Quick filters for the console UI
+    quickFilters:
+      - name: Applications
+        filter:
+          src_namespace!: "openshift-,netobserv"
+          dst_namespace!: "openshift-,netobserv"
+        default: true
+      - name: Infrastructure
+        filter:
+          src_namespace: "openshift-,netobserv"
+          dst_namespace: "openshift-,netobserv"
+      - name: Pods network
+        filter:
+          src_kind: Pod
+          dst_kind: Pod
+        default: true
+
+  # Export flows to Prometheus (since we're not using Loki)
+  exporters: []

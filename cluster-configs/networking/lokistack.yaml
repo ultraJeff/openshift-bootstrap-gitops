@@ -1,0 +1,41 @@
+---
+# Namespace for NetObserv components (if not already created by FlowCollector)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: netobserv
+  labels:
+    name: netobserv
+---
+# LokiStack for Network Observability
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: netobserv-loki
+  namespace: netobserv
+spec:
+  # Demo/dev size - minimal resources
+  size: 1x.demo
+  # Single-node deployment
+  replicationFactor: 1
+  # S3-compatible storage (MinIO)
+  storage:
+    schemas:
+      - version: v13
+        effectiveDate: "2024-01-01"
+    secret:
+      name: loki-minio-credentials
+      type: s3
+  # Storage class for Loki's internal data
+  storageClassName: lvms-lvmstorage
+  # Tenant mode for NetObserv
+  tenants:
+    mode: openshift-network
+  # Resource limits for extra-small deployment
+  limits:
+    global:
+      ingestion:
+        ingestionRate: 4
+        ingestionBurstSize: 6
+      queries:
+        maxEntriesLimitPerQuery: 5000
