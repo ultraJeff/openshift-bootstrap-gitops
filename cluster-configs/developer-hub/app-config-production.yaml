@@ -4,6 +4,7 @@ kind: ConfigMap
 metadata:
   annotations:
     rhdh.redhat.com/backstage-name: developer-hub
+    argocd.argoproj.io/sync-wave: "2"
   labels:
     rhdh.redhat.com/ext-config-sync: "true"
   name: app-config-rhdh

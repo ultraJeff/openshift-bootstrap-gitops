@@ -6,12 +6,16 @@ metadata:
   labels:
     name: rhdh-operator
     openshift.io/cluster-monitoring: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
   name: rhdh-operator-operatorgroup
   namespace: rhdh-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec: {}
 ---
 apiVersion: operators.coreos.com/v1alpha1
@@ -19,6 +23,8 @@ kind: Subscription
 metadata:
   name: rhdh
   namespace: rhdh-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   channel: fast
   installPlanApproval: Automatic

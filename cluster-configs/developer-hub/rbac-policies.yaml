@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: rbac-policies
   namespace: rhdh
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 data:
   rbac-policies.csv: |
     p, role:default/location_read, catalog.entity.read, read, allow

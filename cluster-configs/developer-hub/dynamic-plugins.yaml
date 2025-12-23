@@ -3,6 +3,8 @@ apiVersion: v1
 metadata:
   name: rhdh-dynamic-plugins
   namespace: rhdh
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 data:
   dynamic-plugins.yaml: |
     includes:

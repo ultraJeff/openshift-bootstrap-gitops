@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/name: backstage
     config.openshift.io/component: developer-hub
     config.openshift.io/managed-by: gitops
+  annotations:
+    # Sync last - requires CRD from operator (wave 1) and secrets (wave 2)
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   # Database configuration - using embedded PostgreSQL for simplicity
   database:

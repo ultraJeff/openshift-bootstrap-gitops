@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: dynamic-plugins-root
   namespace: rhdh
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   accessModes:
     - ReadWriteOnce
