@@ -28,6 +28,9 @@ spec:
                   claimName: dynamic-plugins-root
   # Application configuration
   application:
+    # Reference our dynamic plugins ConfigMap
+    dynamicPluginsConfigMapName: rhdh-dynamic-plugins
+
     # Use external ConfigMap for app configuration
     appConfig:
       configMaps:

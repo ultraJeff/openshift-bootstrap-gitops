@@ -122,6 +122,8 @@ data:
     extensions:
       installation:
         enabled: true
+        saveToSingleFile:
+          file: /opt/app-root/src/dynamic-plugins-root/installed-dynamic-plugins.yaml
     permission:
       enabled: true
       rbac:
