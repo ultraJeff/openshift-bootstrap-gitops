@@ -5,6 +5,8 @@ metadata:
   namespace: rhdh
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    # Skip health check - PVC stays Pending until consumed (WaitForFirstConsumer)
+    argocd.argoproj.io/sync-options: SkipHealthCheck=true
 spec:
   accessModes:
     - ReadWriteOnce
