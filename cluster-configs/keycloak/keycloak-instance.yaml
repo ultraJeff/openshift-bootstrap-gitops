@@ -4,6 +4,8 @@ kind: Keycloak
 metadata:
   name: keycloak
   namespace: keycloak
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   instances: 1
   db:
@@ -15,19 +17,26 @@ spec:
     passwordSecret:
       name: keycloak-db-secret
       key: password
+  # Use HTTP internally, OpenShift Route handles TLS
   http:
-    tlsSecret: keycloak-tls-secret
+    httpEnabled: true
+  proxy:
+    headers: xforwarded
   hostname:
     hostname: sso.apps.tallgeese.ultra.lab
   ingress:
     enabled: true
     className: openshift-default
+    annotations:
+      route.openshift.io/termination: edge
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgresql-db
   namespace: keycloak
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   serviceName: postgresql-db-service
   selector:
@@ -75,6 +84,8 @@ kind: Service
 metadata:
   name: postgres-db
   namespace: keycloak
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   selector:
     app: postgresql-db

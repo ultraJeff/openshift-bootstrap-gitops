@@ -4,10 +4,6 @@ kind: Kustomization
 metadata:
   name: developer-hub-configs
 
-# NOTE: Secrets (keycloak-secrets.yaml, rhdh-secrets.yaml, argocd-secrets.yaml)
-# are NOT included here - they are gitignored and must be applied manually.
-# See secrets/kustomization.yaml for manual secret application.
-
 resources:
 - namespace.yaml
 - rhdh-operator.yaml
@@ -15,8 +11,6 @@ resources:
 - dynamic-plugins-root-pvc.yaml
 - app-config-production.yaml
 - rbac-policies.yaml
-# rhdh-instance.yaml is applied AFTER secrets are in place
-# It references the secrets, so they must exist first
 - rhdh-instance.yaml
 
 commonLabels:

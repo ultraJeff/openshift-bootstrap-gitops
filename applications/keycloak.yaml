@@ -1,16 +1,16 @@
 ---
-# ArgoCD Application for Red Hat Developer Hub
+# ArgoCD Application for Keycloak (RHBK)
 #
 # PREREQUISITES:
 #   Before this Application can sync successfully, you must apply secrets manually:
-#   oc apply -k cluster-configs/developer-hub/secrets/
+#   oc apply -k cluster-configs/keycloak/secrets/
 #
-# See cluster-configs/developer-hub/secrets/README.md for details.
+# See cluster-configs/keycloak/secrets/README.md for details.
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: developer-hub
+  name: keycloak
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -19,10 +19,10 @@ spec:
   source:
     repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
     targetRevision: main
-    path: cluster-configs/developer-hub
+    path: cluster-configs/keycloak
   destination:
     server: https://kubernetes.default.svc
-    namespace: rhdh
+    namespace: keycloak
   syncPolicy:
     automated:
       prune: true
@@ -30,6 +30,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - PruneLast=true
+      - RespectIgnoreDifferences=true
     retry:
       limit: 5
       backoff:

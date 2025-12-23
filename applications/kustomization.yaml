@@ -5,7 +5,8 @@ metadata:
   name: argocd-applications
 
 resources:
-- developer-hub.yaml
+  - keycloak.yaml
+  - developer-hub.yaml
 # Add more applications here as needed:
 # - storage.yaml
 # - security.yaml

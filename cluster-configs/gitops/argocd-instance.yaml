@@ -5,6 +5,28 @@ metadata:
   name: openshift-gitops
   namespace: openshift-gitops
 spec:
+  # Custom health checks - treat Pending PVCs (WaitForFirstConsumer) as Healthy
+  resourceHealthChecks:
+    - group: ""
+      kind: PersistentVolumeClaim
+      check: |
+        hs = {}
+        if obj.status ~= nil then
+          if obj.status.phase ~= nil then
+            if obj.status.phase == "Pending" then
+              -- WaitForFirstConsumer PVCs stay Pending until consumed - that's OK
+              hs.status = "Healthy"
+              hs.message = "PVC is Pending (WaitForFirstConsumer)"
+            elseif obj.status.phase == "Bound" then
+              hs.status = "Healthy"
+              hs.message = "PVC is Bound"
+            else
+              hs.status = "Degraded"
+              hs.message = "PVC is " .. obj.status.phase
+            end
+          end
+        end
+        return hs
   sourceNamespaces:
     - a-project
   applicationSet:
@@ -66,17 +88,15 @@ spec:
   rbac:
     defaultPolicy: ""
     policy: |
+      # OpenShift groups -> ArgoCD admin
       g, system:cluster-admins, role:admin
       g, cluster-admins, role:admin
-      g, developer-hub, role:readonly
-      p, admin, applications, *, */*, allow
-      p, admin, clusters, *, *, allow
-      p, admin, repositories, *, *, allow
-      p, admin, projects, *, *, allow
-      p, admin, accounts, *, *, allow
-      p, admin, gpgkeys, *, *, allow
+      # OpenShift htpasswd 'admin' user -> ArgoCD admin
       g, admin, role:admin
-    scopes: '[groups]'
+      # Service accounts
+      g, developer-hub, role:readonly
+    # Include both groups and preferred_username (for individual user matching)
+    scopes: '[groups, preferred_username]'
   extraConfig:
     accounts.admin: 'apiKey, login'
     accounts.developer-hub: 'apiKey, login'
