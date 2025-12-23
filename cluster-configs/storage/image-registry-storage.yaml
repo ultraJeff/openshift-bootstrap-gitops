@@ -23,6 +23,8 @@ metadata:
 spec:
   managementState: Managed
   replicas: 1
+  # Recreate strategy required for RWO storage (LVM only supports single-node access)
+  rolloutStrategy: Recreate
   storage:
     pvc:
       claim: image-registry-storage
