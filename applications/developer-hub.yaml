@@ -1,0 +1,39 @@
+---
+# ArgoCD Application for Red Hat Developer Hub
+#
+# PREREQUISITES:
+#   Before this Application can sync successfully, you must apply secrets manually:
+#   oc apply -k cluster-configs/developer-hub/secrets/
+#
+# See cluster-configs/developer-hub/secrets/README.md for details.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: developer-hub
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/developer-hub
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhdh
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

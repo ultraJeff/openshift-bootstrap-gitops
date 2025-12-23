@@ -69,6 +69,13 @@ spec:
       g, system:cluster-admins, role:admin
       g, cluster-admins, role:admin
       g, developer-hub, role:readonly
+      p, admin, applications, *, */*, allow
+      p, admin, clusters, *, *, allow
+      p, admin, repositories, *, *, allow
+      p, admin, projects, *, *, allow
+      p, admin, accounts, *, *, allow
+      p, admin, gpgkeys, *, *, allow
+      g, admin, role:admin
     scopes: '[groups]'
   extraConfig:
     accounts.admin: 'apiKey, login'
