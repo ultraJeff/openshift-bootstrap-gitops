@@ -1,0 +1,28 @@
+# Journald log retention for master nodes
+# Prevents journal logs from consuming excessive disk space
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: 99-master-journald-retention
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      files:
+      - path: /etc/systemd/journald.conf.d/99-retention.conf
+        mode: 0644
+        overwrite: false
+        contents:
+          inline: |
+            [Journal]
+            # Limit total journal disk usage to 2GB
+            SystemMaxUse=2G
+            # Keep logs for maximum 30 days
+            MaxRetentionSec=30d
+            # Rotate log files daily
+            MaxFileSec=1d
+            # Keep at least 25GB free on disk
+            SystemKeepFree=25G

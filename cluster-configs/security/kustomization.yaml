@@ -6,6 +6,8 @@ metadata:
 
 resources:
 - admin-rbac.yaml
+- htpasswd-oauth.yaml
+- htpasswd-secret.yaml
 
 commonLabels:
   config.openshift.io/component: security

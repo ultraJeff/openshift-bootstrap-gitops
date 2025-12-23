@@ -1,0 +1,24 @@
+# Disk partitioning for LVM Storage on worker nodes
+# Included for extensibility if workers are added later
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 98-worker-partition-for-lvmstorage
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    storage:
+      disks:
+        - device: /dev/nvme0n1
+          partitions:
+            # Partition 4 is the root filesystem - limit its size
+            - number: 4
+              sizeMiB: 150000  # 150GB for root
+              resize: true
+            # Partition 5 for LVM storage
+            - number: 5
+              label: lvmstorage
+              sizeMiB: 0  # Use all remaining space

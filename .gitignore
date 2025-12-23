@@ -96,3 +96,8 @@ docker-compose.override.yml
 # Hardware Config Files
 nodes-config.yaml
 *.iso
+
+# Agent-based installer configs (contain pull secrets, SSH keys, and real MACs/IPs)
+# Use the .example files as templates
+infrastructure/compact-cluster/install-config.yaml
+infrastructure/compact-cluster/agent-config.yaml

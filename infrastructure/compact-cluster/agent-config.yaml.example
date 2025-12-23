@@ -1,0 +1,98 @@
+apiVersion: v1beta1
+kind: AgentConfig
+metadata:
+  name: my-cluster  # Match install-config.yaml metadata.name
+
+# Rendezvous IP - the first node to boot that coordinates installation
+rendezvousIP: 192.168.1.101
+
+hosts:
+  # Node 1: master-0 - rendezvous host
+  - hostname: master-0
+    role: master
+    rootDeviceHints:
+      deviceName: /dev/nvme0n1  # or /dev/sda for SATA drives
+    interfaces:
+      - macAddress: "AA:BB:CC:DD:EE:01"
+        name: enp5s0  # Your network interface name
+    networkConfig:
+      interfaces:
+        - name: enp5s0
+          type: ethernet
+          state: up
+          mac-address: "AA:BB:CC:DD:EE:01"
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.1.101
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.1.1  # Your DNS server
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.1.1  # Your gateway
+            next-hop-interface: enp5s0
+
+  # Node 2: master-1
+  - hostname: master-1
+    role: master
+    rootDeviceHints:
+      deviceName: /dev/nvme0n1
+    interfaces:
+      - macAddress: "AA:BB:CC:DD:EE:02"
+        name: enp5s0
+    networkConfig:
+      interfaces:
+        - name: enp5s0
+          type: ethernet
+          state: up
+          mac-address: "AA:BB:CC:DD:EE:02"
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.1.102
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.1.1
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.1.1
+            next-hop-interface: enp5s0
+
+  # Node 3: master-2
+  - hostname: master-2
+    role: master
+    rootDeviceHints:
+      deviceName: /dev/nvme0n1
+    interfaces:
+      - macAddress: "AA:BB:CC:DD:EE:03"
+        name: enp5s0
+    networkConfig:
+      interfaces:
+        - name: enp5s0
+          type: ethernet
+          state: up
+          mac-address: "AA:BB:CC:DD:EE:03"
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.1.103
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.1.1
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.1.1
+            next-hop-interface: enp5s0
