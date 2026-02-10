@@ -10,19 +10,68 @@ data:
     includes:
     - dynamic-plugins.default.yaml
     plugins:
+      # Catalog and GitHub plugins
       - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-keycloak-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
         disabled: false
+      # Kubernetes plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes-backend-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
+      # ArgoCD plugins
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: false
+      # RBAC plugin
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
+        disabled: false
+      # Orchestrator plugins - serverless workflows integration
+      - package: "@redhat/backstage-plugin-orchestrator@1.8.2"
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-orchestrator:
+                appIcons:
+                  - importName: OrchestratorIcon
+                    name: orchestratorIcon
+                dynamicRoutes:
+                  - importName: OrchestratorPage
+                    menuItem:
+                      icon: orchestratorIcon
+                      text: Orchestrator
+                    path: /orchestrator
+      - package: "@redhat/backstage-plugin-orchestrator-backend-dynamic@1.8.2"
+        disabled: false
+        pluginConfig:
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service
+        dependencies:
+          - ref: sonataflow
+      - package: "@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic@1.8.2"
+        disabled: false
+        pluginConfig:
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service
+      - package: "@redhat/backstage-plugin-orchestrator-form-widgets@1.8.2"
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-orchestrator-form-widgets: {}
+      # Notifications plugins - required for Orchestrator
+      - package: ./dynamic-plugins/dist/backstage-plugin-notifications
+        disabled: false
+      - package: ./dynamic-plugins/dist/backstage-plugin-signals
+        disabled: false
+      - package: ./dynamic-plugins/dist/backstage-plugin-notifications-backend-dynamic
+        disabled: false
+      - package: ./dynamic-plugins/dist/backstage-plugin-signals-backend-dynamic
         disabled: false

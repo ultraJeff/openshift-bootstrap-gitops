@@ -52,7 +52,8 @@ spec:
       configMaps:
         - name: rbac-policies
 
-    # Single replica for development
+    # Must be 1: dynamic-plugins-root and audit-log PVCs are RWO (single attach).
+    # Multiple replicas cause Multi-Attach errors and stuck init containers.
     replicas: 1
 
     # Route configuration

@@ -31,6 +31,9 @@ resources:
 # Network Observability (NetObserv)
 - networking/
 
+# Orchestrator operators (Serverless + Serverless Logic)
+- orchestrator/
+
 commonLabels:
   config.openshift.io/bootstrap: "true"
   config.openshift.io/managed-by: gitops

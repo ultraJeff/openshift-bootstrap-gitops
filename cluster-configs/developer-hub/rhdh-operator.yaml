@@ -26,7 +26,8 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  channel: fast
+  # fast-1.8: RHDH 1.8.x line. Use "fast" for latest y-stream.
+  channel: fast-1.8
   installPlanApproval: Automatic
   name: rhdh
   source: redhat-operators
