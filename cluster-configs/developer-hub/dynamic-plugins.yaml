@@ -22,16 +22,16 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
-      # ArgoCD plugins
-      - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
+      # ArgoCD integration (OCI - new backend + renamed frontend in 1.9)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:{{inherit}}'
         disabled: false
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:{{inherit}}'
         disabled: false
       # RBAC plugin
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
         disabled: false
-      # Orchestrator plugins - serverless workflows integration
-      - package: "@redhat/backstage-plugin-orchestrator@1.8.2"
+      # Orchestrator plugins (OCI - required for 1.9)
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator:{{inherit}}'
         disabled: false
         pluginConfig:
           dynamicPlugins:
@@ -46,7 +46,7 @@ data:
                       icon: orchestratorIcon
                       text: Orchestrator
                     path: /orchestrator
-      - package: "@redhat/backstage-plugin-orchestrator-backend-dynamic@1.8.2"
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-backend:{{inherit}}'
         disabled: false
         pluginConfig:
           orchestrator:
@@ -54,13 +54,13 @@ data:
               url: http://sonataflow-platform-data-index-service
         dependencies:
           - ref: sonataflow
-      - package: "@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic@1.8.2"
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:{{inherit}}'
         disabled: false
         pluginConfig:
           orchestrator:
             dataIndexService:
               url: http://sonataflow-platform-data-index-service
-      - package: "@redhat/backstage-plugin-orchestrator-form-widgets@1.8.2"
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets:{{inherit}}'
         disabled: false
         pluginConfig:
           dynamicPlugins:
