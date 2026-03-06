@@ -7,7 +7,14 @@ metadata:
     argocd.argoproj.io/sync-wave: "2"
 data:
   dynamic-plugins.yaml: |
+    includes:
+    - dynamic-plugins.default.yaml
     plugins:
+      # Disable old ArgoCD plugins from defaults (unbundled in 1.9)
+      - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
+        disabled: true
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
+        disabled: true
       # Catalog and GitHub plugins (bundled in 1.9)
       - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-keycloak-dynamic
         disabled: false
@@ -28,42 +35,7 @@ data:
       # RBAC plugin (bundled in 1.9)
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
         disabled: false
-      # Orchestrator plugins (OCI)
-      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator@sha256:f40d39fb7599d2cbfa8f64d6f4703d69539e4a4b0e49518499f47ca986fbd814'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              red-hat-developer-hub.backstage-plugin-orchestrator:
-                appIcons:
-                  - importName: OrchestratorIcon
-                    name: orchestratorIcon
-                dynamicRoutes:
-                  - importName: OrchestratorPage
-                    menuItem:
-                      icon: orchestratorIcon
-                      text: Orchestrator
-                    path: /orchestrator
-      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-backend@sha256:3a3d10258d1da0529ba853f82742cb55740ce8799599a41f1c5fff6a76d8d84d'
-        disabled: false
-        pluginConfig:
-          orchestrator:
-            dataIndexService:
-              url: http://sonataflow-platform-data-index-service
-        dependencies:
-          - ref: sonataflow
-      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator@sha256:566c09637572fe80c3769d92e6847f1def5b8a7e2a7fc52e046b55cfc6dcea4f'
-        disabled: false
-        pluginConfig:
-          orchestrator:
-            dataIndexService:
-              url: http://sonataflow-platform-data-index-service
-      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets@sha256:692afe6b19aabf47a4ea02177d7637083db0adfeb7240b5321d64ee39d5cd040'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              red-hat-developer-hub.backstage-plugin-orchestrator-form-widgets: {}
+      # Orchestrator plugins disabled - SonataFlow operator not installed on this cluster
       # Notifications plugins (bundled in 1.9)
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false
