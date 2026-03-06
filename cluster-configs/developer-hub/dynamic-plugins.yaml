@@ -22,6 +22,11 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
+      # Explicitly disable old ArgoCD plugins from defaults (unbundled in 1.9)
+      - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
+        disabled: true
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
+        disabled: true
       # ArgoCD integration (OCI - new backend + renamed frontend in 1.9)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:{{inherit}}'
         disabled: false
