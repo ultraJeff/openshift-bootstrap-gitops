@@ -1,0 +1,37 @@
+---
+# ArgoCD Application for Cluster Observability (external repo)
+#
+# Deploys the Cluster Observability Operator, UI plugins, LokiStack,
+# TempoStack (via ObservabilityInstaller), and monitoring components
+# from the standalone cluster-o11y-operator-demo repository.
+#
+# NOTE: MinIO storage is included in the o11y repo. If networking/
+# also deploys MinIO to the same namespace, disable one to avoid conflicts.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: observability
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/cluster-o11y-operator-demo.git
+    targetRevision: main
+    path: observability
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

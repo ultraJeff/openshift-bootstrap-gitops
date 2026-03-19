@@ -25,10 +25,18 @@ data:
     p, role:default/plugins, tekton.view.read, read, allow
     p, role:default/plugins, argocd.view.read, read, allow
     p, role:default/plugins, kubernetes.proxy, use, allow
+    p, role:default/admin_plugins, orchestrator.workflow, read, allow
+    p, role:default/admin_plugins, orchestrator.workflow.use, update, allow
+    p, role:default/admin_plugins, orchestrator.workflowAdminView, read, allow
+    p, role:default/admin_plugins, orchestrator.instanceAdminView, read, allow
+    p, role:default/admin_plugins, kubernetes.clusters.read, read, allow
+    p, role:default/admin_plugins, kubernetes.resources.read, read, allow
+    p, role:default/admin_plugins, catalog-entity, read, allow
     g, user:default/admin, role:default/location_read
     g, user:default/admin, role:default/platformengineer
     g, user:default/admin, role:default/scaffolder_execute
     g, user:default/admin, role:default/plugins
+    g, user:default/admin, role:default/admin_plugins
     g, group:default/rhdh-users, role:default/location_read
     g, group:default/rhdh-users, role:default/scaffolder_execute
     g, group:default/rhdh-users, role:default/plugins

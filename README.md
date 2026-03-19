@@ -1,145 +1,128 @@
 # OpenShift Bootstrap GitOps Repository
 
-This repository contains standardized configurations for bootstrapping new OpenShift clusters with common operational settings.
+This repository contains standardized configurations for bootstrapping new OpenShift clusters with common operational settings, managed via ArgoCD.
 
 ## Structure
 
 ```
-├── cluster-configs/          # Cluster-level configurations
-│   ├── acm/                 # Advanced Cluster Management
-│   ├── developer-hub/       # Red Hat Developer Hub (Backstage)
-│   ├── gitops/              # OpenShift GitOps (ArgoCD) (TODO: add second ArgoCD instance for apps)
-│   ├── logging/             # Log management and retention
-│   ├── security/            # Security policies, RBAC, and authentication
-│   ├── storage/             # LVM Storage, StorageClass, Image Registry
-│   ├── monitoring/          # Monitoring and alerting setup (TODO)
-│   └── networking/          # Network policies and ingress (TODO)
-├── applications/            # Application deployments
-└── infrastructure/          # Infrastructure components
-    └── disk-partitioning/   # SNO disk partitioning (install-time only)
+├── applications/               # ArgoCD Application manifests
+│   ├── developer-hub.yaml      # RHDH (requires manual secrets first)
+│   ├── keycloak.yaml           # Keycloak (requires manual secrets first)
+│   ├── networking.yaml         # Network Observability (NetObserv + Loki)
+│   ├── observability.yaml      # Cluster Observability (external repo)
+│   ├── orchestrator.yaml       # Serverless + Serverless Logic operators
+│   ├── security.yaml           # OAuth, htpasswd, admin RBAC
+│   ├── storage.yaml            # LVM Storage + Image Registry
+│   └── resource-test-app/      # Sample test application
+├── cluster-configs/            # Cluster-level Kustomize configurations
+│   ├── acm/                    # Advanced Cluster Management
+│   ├── acs/                    # Red Hat Advanced Cluster Security
+│   ├── developer-hub/          # Red Hat Developer Hub (Backstage)
+│   │   └── secrets/            # Manual secrets (not in GitOps)
+│   ├── gitops/                 # OpenShift GitOps (ArgoCD instance)
+│   ├── keycloak/               # Keycloak (RHBK)
+│   │   └── secrets/            # Manual secrets (not in GitOps)
+│   ├── networking/             # NetObserv, Loki, MinIO
+│   ├── orchestrator/           # Serverless + Serverless Logic operators
+│   ├── security/               # htpasswd OAuth, admin RBAC
+│   └── storage/                # LVM Storage, StorageClass, Image Registry
+└── infrastructure/             # Install-time and node configurations
+    ├── compact-cluster/        # Assisted Installer configs (install-config, agent-config)
+    ├── disk-partitioning/      # SNO disk layout (install-time only)
+    └── node-configs/           # Kubelet log rotation, journald, image GC
 ```
 
 ## Quick Start
 
 ### Option A: Bootstrap Everything (New Cluster)
 ```bash
-# Deploy all bootstrap configurations
+# Deploy all cluster configurations
 oc apply -k cluster-configs/
+
+# Apply manual secrets (required before ArgoCD sync)
+oc apply -k cluster-configs/developer-hub/secrets/
+oc apply -k cluster-configs/keycloak/secrets/
+
+# Register ArgoCD Applications
+oc apply -k applications/
 ```
 
 ### Option B: Deploy Components Individually
-
-#### 1. Storage (Deploy First)
 ```bash
-# LVM Storage, StorageClass, and Image Registry
+# 1. Storage (deploy first — other components depend on it)
 oc apply -k cluster-configs/storage/
-```
 
-#### 2. Platform Operators
-```bash
-# OpenShift GitOps (ArgoCD)
+# 2. OpenShift GitOps (ArgoCD)
 oc apply -k cluster-configs/gitops/
 
-# Advanced Cluster Management
-oc apply -k cluster-configs/acm/
+# 3. Security (OAuth, admin user)
+oc apply -k cluster-configs/security/
 
-# Log retention policies
-oc apply -k cluster-configs/logging/
+# 4. Platform operators
+oc apply -k cluster-configs/networking/
+oc apply -k cluster-configs/orchestrator/
+oc apply -k cluster-configs/acm/
+oc apply -k cluster-configs/acs/
+
+# 5. Applications (apply secrets first!)
+oc apply -k cluster-configs/keycloak/secrets/
+oc apply -k cluster-configs/keycloak/
+
+oc apply -k cluster-configs/developer-hub/secrets/
+oc apply -k cluster-configs/developer-hub/
 ```
 
-#### 3. Monitor Deployment
+### Monitor Deployment
 ```bash
-# Check operator status
+# Operator status
 oc get subscriptions -A
 oc get csv -A
 
-# Check storage
+# Storage
 oc get lvmcluster -n openshift-storage
 oc get pvc -n openshift-image-registry
 
-# Check GitOps
+# GitOps
 oc get argocd -n openshift-gitops
+oc get applications -n openshift-gitops
 
-# Check ACM
-oc get multiclusterhub -n open-cluster-management
+# RHDH
+oc get backstage -n rhdh
+oc get pods -n rhdh
 ```
 
-## Logging Configuration Details
+## ArgoCD Applications
 
-### Container Logs (`kubelet-log-rotation.yaml`)
-- **Max log file size**: 50Mi per container
-- **Max log files**: 5 rotated files kept
-- **Total per container**: ~250Mi maximum
-- **Effect**: Immediate (no reboot required)
+| Application | Source | Secrets Required |
+|-------------|--------|-----------------|
+| `developer-hub` | `cluster-configs/developer-hub` | Yes — `oc apply -k cluster-configs/developer-hub/secrets/` |
+| `keycloak` | `cluster-configs/keycloak` | Yes — `oc apply -k cluster-configs/keycloak/secrets/` |
+| `networking` | `cluster-configs/networking` | No (MinIO creds in minio-secrets.yaml) |
+| `observability` | External: `ultraJeff/cluster-o11y-operator-demo` | No |
+| `orchestrator` | `cluster-configs/orchestrator` | No |
+| `security` | `cluster-configs/security` | No |
+| `storage` | `cluster-configs/storage` | No |
 
-### System Logs (`journald-retention.yaml`)
-- **Max journal usage**: 2GB total
-- **Retention period**: 30 days
-- **Rotation**: Daily
-- **Effect**: Requires node reboot via MachineConfig
+The observability stack is managed in a separate repository ([cluster-o11y-operator-demo](https://github.com/ultraJeff/cluster-o11y-operator-demo)) and deployed via ArgoCD Application referencing that external repo.
 
-## Current Cluster Analysis
-Based on cluster analysis from 2025-08-28:
-- **Disk usage**: 29% (276G/953G)
-- **Journal logs**: 3.5G
-- **API server logs**: 2.1G
-- **Pod logs**: 1.6G
-- **Status**: Manageable but growing
+## External Repositories
+
+- **[cluster-o11y-operator-demo](https://github.com/ultraJeff/cluster-o11y-operator-demo)** — Cluster Observability Operator, LokiStack, TempoStack, monitoring, tracing, and UI plugins. Deployed as an ArgoCD Application from `applications/observability.yaml`.
 
 ## Single Node OpenShift (SNO) Disk Partitioning
 
-⚠️ **CRITICAL: Must be done during installation only!**
+**Must be done during installation only.**
 
-For SNO clusters, separate your root filesystem from container storage:
-
-1. **Before installation**: Customize `infrastructure/disk-partitioning/98-create-a-partition-for-lvmstorage.yaml`
-2. **During installation**: Upload the MachineConfig via Assisted Installer
-3. **After installation**: Apply storage configs for LVM-based dynamic provisioning
-
+1. Customize `infrastructure/disk-partitioning/98-create-a-partition-for-lvmstorage.yaml`
+2. Upload the MachineConfig via Assisted Installer
+3. After installation, apply storage configs:
 ```bash
-# Post-installation: Set up LVM storage
-oc apply -f cluster-configs/storage/lvmstorage-operator.yaml
-oc apply -f cluster-configs/storage/lvmcluster.yaml
+oc apply -k cluster-configs/storage/
 ```
 
-See `infrastructure/disk-partitioning/README.md` for detailed instructions.
+See `infrastructure/compact-cluster/README.md` for detailed instructions.
 
-## Adding to New Clusters
+## Related Documentation
 
-1. **For SNO clusters**: Use disk partitioning configs during installation
-2. **For new cluster bootstrap**: Apply all configs in `cluster-configs/`
-3. **For existing clusters**: Apply selectively based on needs
-4. **With ArgoCD/GitOps**: Point to this repo for automated application
-
-## Configuration Customization
-
-### Adjust Log Retention
-Edit the values in the YAML files:
-- `containerLogMaxSize`: Increase for verbose applications
-- `MaxRetentionSec`: Adjust based on compliance requirements
-- `SystemMaxUse`: Scale based on disk size
-
-### Add Additional Configs
-- Place new configurations in appropriate subdirectories
-- Follow the same naming convention: `component-purpose.yaml`
-- Add documentation to this README
-
-## Troubleshooting
-
-### Check Log Rotation Status
-```bash
-# Container logs
-oc logs -n kube-system -l app=node-exporter | grep -i log
-
-# Journal status
-oc debug node/NODE_NAME -- chroot /host journalctl --disk-usage
-```
-
-### Force Immediate Cleanup
-```bash
-# Clean old container logs (if needed)
-oc debug node/NODE_NAME -- chroot /host find /var/log/pods -name "*.log.*" -mtime +7 -delete
-
-# Vacuum journal logs
-oc debug node/NODE_NAME -- chroot /host journalctl --vacuum-time=7d
-```
+- [RHDH Migration Plan](RHDH-MIGRATION-PLAN.md) — Feature parity checklist between clusters
+- [WARP.md](WARP.md) — Warp terminal reference guide
