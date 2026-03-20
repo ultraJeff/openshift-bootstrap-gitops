@@ -1,0 +1,37 @@
+---
+# ArgoCD Application for Node configurations
+#
+# Deploys KubeletConfig and MachineConfig resources for:
+# - Image garbage collection thresholds
+# - Container log rotation
+# - Journald retention
+# - System/kube resource reservations
+#
+# WARNING: Changes to these resources trigger rolling node reboots via the MCO.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: node-configs
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: infrastructure/node-configs
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=false
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

@@ -12,7 +12,7 @@ spec:
       files:
       - path: /etc/systemd/journald.conf.d/99-retention.conf
         mode: 0644
-        overwrite: false
+        overwrite: true
         contents:
           inline: |
             [Journal]
@@ -39,7 +39,7 @@ spec:
       files:
       - path: /etc/systemd/journald.conf.d/99-retention.conf
         mode: 0644
-        overwrite: false
+        overwrite: true
         contents:
           inline: |
             [Journal]

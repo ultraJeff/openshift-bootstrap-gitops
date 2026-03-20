@@ -9,6 +9,7 @@ resources:
   - storage.yaml
   - security.yaml
   - orchestrator.yaml
+  - node-configs.yaml
 
   # Applications with manual secret prerequisites (in-repo)
   - keycloak.yaml
