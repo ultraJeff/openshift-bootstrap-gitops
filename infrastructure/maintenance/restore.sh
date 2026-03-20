@@ -92,7 +92,37 @@ sleep 10
 oc scale deployment backstage-developer-hub -n rhdh --replicas=1 2>/dev/null || true
 
 # -----------------------------------------------
-# 3. Sync ArgoCD Applications
+# 3. Restore RHOAI components and demo applications
+# -----------------------------------------------
+info "Restoring RHOAI components..."
+for deploy in $(oc get deployments -n redhat-ods-applications -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get deployment "$deploy" -n redhat-ods-applications -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale deployment "$deploy" -n redhat-ods-applications --replicas=1 2>/dev/null || true
+    fi
+done
+
+info "Restoring demo applications..."
+DEMO_NAMESPACES="hotrod-demo quarkus-otel-demo super-slim-demo"
+for ns in ${DEMO_NAMESPACES}; do
+    for deploy in $(oc get deployments -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+        CURRENT=$(oc get deployment "$deploy" -n "$ns" -o jsonpath='{.spec.replicas}' 2>/dev/null)
+        if [[ "$CURRENT" == "0" ]]; then
+            info "  Scaling up: $ns/$deploy"
+            oc scale deployment "$deploy" -n "$ns" --replicas=1 2>/dev/null || true
+        fi
+    done
+    for sts in $(oc get statefulsets -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+        CURRENT=$(oc get statefulset "$sts" -n "$ns" -o jsonpath='{.spec.replicas}' 2>/dev/null)
+        if [[ "$CURRENT" == "0" ]]; then
+            info "  Scaling up: $ns/$sts"
+            oc scale statefulset "$sts" -n "$ns" --replicas=1 2>/dev/null || true
+        fi
+    done
+done
+
+# -----------------------------------------------
+# 4. Sync ArgoCD Applications (renumbered)
 # -----------------------------------------------
 info "Syncing ArgoCD Applications..."
 echo ""
@@ -114,7 +144,7 @@ info "To fully sync an app:  oc patch application <name> -n openshift-gitops --t
 echo ""
 
 # -----------------------------------------------
-# 4. Post-restore checks
+# 5. Post-restore checks
 # -----------------------------------------------
 info "Waiting 30s for workloads to start..."
 sleep 30
