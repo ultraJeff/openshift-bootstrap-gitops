@@ -1,32 +1,33 @@
 ---
-# ArgoCD Application for Network Observability
+# ArgoCD Application for Red Hat OpenShift AI (external repo)
 #
-# Deploys MinIO, Loki Operator, LokiStack, NetObserv Operator,
-# and FlowCollector for network traffic visibility.
+# Deploys DSCI, DSC, namespace, ServingRuntime, and InferenceService
+# for a minimal AI/ML serving environment.
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: networking
+  name: rhoai
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    repoURL: https://github.com/ultraJeff/rhoai-super-slim.git
     targetRevision: main
-    path: cluster-configs/networking
+    path: manifests/base
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
       - PruneLast=true
+      - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
     retry:
-      limit: 5
+      limit: 10
       backoff:
-        duration: 5s
+        duration: 10s
         factor: 2
-        maxDuration: 3m
+        maxDuration: 5m

@@ -5,16 +5,19 @@ metadata:
   name: argocd-applications
 
 resources:
-  # Platform infrastructure
+  # Platform infrastructure (in-repo)
   - storage.yaml
   - security.yaml
-  - networking.yaml
   - orchestrator.yaml
 
-  # Applications with manual secret prerequisites
+  # Applications with manual secret prerequisites (in-repo)
   - keycloak.yaml
   - developer-hub.yaml
 
   # External repos
   - observability.yaml
-  - observability-demos.yaml
+  - network-observability.yaml
+  - external-secrets.yaml
+  - rhoai.yaml
+  - service-mesh.yaml
+  - keda.yaml

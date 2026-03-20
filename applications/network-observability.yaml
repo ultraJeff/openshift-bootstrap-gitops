@@ -1,24 +1,23 @@
 ---
-# ArgoCD Application for Cluster Observability (external repo)
+# ArgoCD Application for Network Observability (external repo)
 #
-# Deploys the Cluster Observability Operator, UI plugins, LokiStack,
-# TempoStack, and shared MinIO storage from cluster-o11y-operator-demo.
-# The shared MinIO instance also serves network-observability and
-# service-mesh apps via their integrated overlays.
+# Deploys the Network Observability Operator, LokiStack, and FlowCollector.
+# Uses the integrated overlay which shares MinIO and Loki Operator
+# from the observability app (cluster-o11y-operator-demo).
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: observability
+  name: network-observability
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/ultraJeff/cluster-o11y-operator-demo.git
+    repoURL: https://github.com/ultraJeff/network-o11y-operator-demo.git
     targetRevision: main
-    path: observability
+    path: overlays/integrated
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

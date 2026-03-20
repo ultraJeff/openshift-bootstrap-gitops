@@ -1,26 +1,22 @@
 ---
-# ArgoCD Application for Observability Demos (external repo)
+# ArgoCD Application for KEDA Autoscaling (external repo)
 #
-# Deploys demo workloads (HotROD, trace generator) and their
-# monitoring resources (MonitoringStack, ServiceMonitors, alerts)
-# from the cluster-o11y-operator-demo repository.
-#
-# Requires the observability Application to be deployed first
-# (operators, storage, tracing pipeline must exist).
+# Deploys the KEDA operator and supporting infrastructure
+# (Kafka, PostgreSQL, RabbitMQ) for autoscaling demos.
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: observability-demos
+  name: keda
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/ultraJeff/cluster-o11y-operator-demo.git
+    repoURL: https://github.com/ultraJeff/microservices-keda.git
     targetRevision: main
-    path: demos-deploy
+    path: infrastructure
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
