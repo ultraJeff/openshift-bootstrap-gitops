@@ -1,18 +1,17 @@
 ---
-# ArgoCD Application for Cluster Observability (external repo)
+# ArgoCD Application for Observability Demos (external repo)
 #
-# Deploys the Cluster Observability Operator, UI plugins, LokiStack,
-# TempoStack (via ObservabilityInstaller), and storage backends
-# from the standalone cluster-o11y-operator-demo repository.
-# Demo workloads are deployed separately via observability-demos.yaml.
+# Deploys demo workloads (HotROD, trace generator) and their
+# monitoring resources (MonitoringStack, ServiceMonitors, alerts)
+# from the cluster-o11y-operator-demo repository.
 #
-# NOTE: MinIO storage is included in the o11y repo. If networking/
-# also deploys MinIO to the same namespace, disable one to avoid conflicts.
+# Requires the observability Application to be deployed first
+# (operators, storage, tracing pipeline must exist).
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: observability
+  name: observability-demos
   namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -21,7 +20,7 @@ spec:
   source:
     repoURL: https://github.com/ultraJeff/cluster-o11y-operator-demo.git
     targetRevision: main
-    path: observability
+    path: demos-deploy
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
@@ -31,8 +30,8 @@ spec:
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
     retry:
-      limit: 10
+      limit: 5
       backoff:
         duration: 10s
         factor: 2
-        maxDuration: 5m
+        maxDuration: 3m

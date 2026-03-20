@@ -17,3 +17,4 @@ resources:
 
   # External repos
   - observability.yaml
+  - observability-demos.yaml
