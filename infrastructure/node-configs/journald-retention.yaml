@@ -14,16 +14,7 @@ spec:
         mode: 0644
         overwrite: true
         contents:
-          inline: |
-            [Journal]
-            # Limit total journal disk usage to 2GB
-            SystemMaxUse=2G
-            # Keep logs for maximum 30 days
-            MaxRetentionSec=30d
-            # Rotate log files daily
-            MaxFileSec=1d
-            # Keep at least 25GB free on disk
-            SystemKeepFree=25G
+          source: data:text/plain;charset=utf-8;base64,W0pvdXJuYWxdCiMgTGltaXQgdG90YWwgam91cm5hbCBkaXNrIHVzYWdlIHRvIDJHQgpTeXN0ZW1NYXhVc2U9MkcKIyBLZWVwIGxvZ3MgZm9yIG1heGltdW0gMzAgZGF5cwpNYXhSZXRlbnRpb25TZWM9MzBkCiMgUm90YXRlIGxvZyBmaWxlcyBkYWlseQpNYXhGaWxlU2VjPTFkCiMgS2VlcCBhdCBsZWFzdCAyNUdCIGZyZWUgb24gZGlzawpTeXN0ZW1LZWVwRnJlZT0yNUcK
 ---
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
@@ -41,13 +32,4 @@ spec:
         mode: 0644
         overwrite: true
         contents:
-          inline: |
-            [Journal]
-            # Limit total journal disk usage to 2GB
-            SystemMaxUse=2G
-            # Keep logs for maximum 30 days
-            MaxRetentionSec=30d
-            # Rotate log files daily
-            MaxFileSec=1d
-            # Keep at least 25GB free on disk
-            SystemKeepFree=25G
+          source: data:text/plain;charset=utf-8;base64,W0pvdXJuYWxdCiMgTGltaXQgdG90YWwgam91cm5hbCBkaXNrIHVzYWdlIHRvIDJHQgpTeXN0ZW1NYXhVc2U9MkcKIyBLZWVwIGxvZ3MgZm9yIG1heGltdW0gMzAgZGF5cwpNYXhSZXRlbnRpb25TZWM9MzBkCiMgUm90YXRlIGxvZyBmaWxlcyBkYWlseQpNYXhGaWxlU2VjPTFkCiMgS2VlcCBhdCBsZWFzdCAyNUdCIGZyZWUgb24gZGlzawpTeXN0ZW1LZWVwRnJlZT0yNUcK
