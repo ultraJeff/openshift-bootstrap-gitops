@@ -16,6 +16,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
+  ignoreDifferences:
+    - group: rhdh.redhat.com
+      kind: Backstage
+      jsonPointers:
+        - /spec/application/replicas
+    - kind: ConfigMap
+      name: rbac-policies
+      jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
   source:
     repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
     targetRevision: main
@@ -28,6 +38,8 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - PruneLast=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
     retry:
       limit: 5
       backoff:
