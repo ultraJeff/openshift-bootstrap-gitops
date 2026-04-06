@@ -142,4 +142,4 @@ See `infrastructure/compact-cluster/README.md` for detailed instructions.
 
 ## Related Documentation
 
-- [RHDH Migration Plan](RHDH-MIGRATION-PLAN.md) -- Feature parity checklist between clusters
+- [RHDH Developer Experience Plan](RHDH-MIGRATION-PLAN.md) -- Tekton, Dev Spaces, and Quarkus software template roadmap

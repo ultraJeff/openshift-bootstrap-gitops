@@ -1,71 +1,120 @@
-# RHDH Feature Parity Migration Plan
+# RHDH Developer Experience Plan
 
-**Source**: `rhdh-bootstrap` (k4mmh cluster)
-**Target**: `openshift-bootstrap-gitops` (tallgeese homelab)
-**Cluster**: `api.tallgeese.ultra.lab:6443`
-**RHDH Version**: 1.9.0 (operator auto-upgraded from 1.8, subscription on `fast-1.8` channel)
+**Cluster**: `api.tallgeese.ultra.lab:6443` (tallgeese homelab)
+**RHDH Version**: 1.9.0 (operator subscription on `fast-1.8` channel)
+**Goal**: Enable a full inner-loop developer experience — Quarkus app creation via a software template, Tekton CI pipelines, and Dev Spaces for cloud-based development, all surfaced in the Developer Hub catalog.
 
-## Context
+## Overview
 
-Both repos manage RHDH deployments via ArgoCD. The `rhdh-bootstrap` repo has additional plugins and configuration that the homelab repo lacks. The RHDH operator auto-upgraded to 1.9 on tallgeese.
+```
+Developer Hub (catalog) ──> Software Template (scaffolder)
+        │                          │
+        │                          ├── Scaffolds Quarkus app repo on GitHub
+        │                          ├── Creates Tekton PipelineRun (first build)
+        │                          └── Registers catalog entity with Dev Spaces link
+        │
+        ├── Tekton CI tab ──────── Pipeline runs, task logs
+        ├── Topology tab ────────── Workload visualization
+        └── Dev Spaces link ─────── Opens workspace in browser
+```
 
-**Not installed on tallgeese** (do not plan for these): Orchestrator / SonataFlow, Tekton Pipelines, Dev Spaces, Quay registry.
+## Phase 1: Install Tekton Pipelines
 
-## RHDH 1.9 Operator Behaviors (Lessons Learned)
+### 1.1 Operator Installation
 
-- The operator controls the RHDH image digest; pinning in the Backstage CR is overridden.
-- The operator creates a **separate** ConfigMap (`backstage-dynamic-plugins-developer-hub`) from the user-provided one (`rhdh-dynamic-plugins`). Changes to the user ConfigMap require operator reconciliation.
-- The catalog index `dynamic-plugins.default.yaml` may reference unbundled plugins as enabled (e.g. `backstage-community-plugin-redhat-argocd`). These must be explicitly overridden with `disabled: true`.
-- OCI plugins can use `{{inherit}}` for version resolution when the defaults are included, or pinned versions (e.g. `bs_1.45.3__1.0.2`) for stability.
-- The `dynamic-plugins-root` PVC caches downloaded plugins across restarts and can harbor stale lock files.
+- [ ] Create `cluster-configs/tekton/` directory with:
+  - `kustomization.yaml`
+  - `tekton-operator.yaml` — Namespace (`openshift-pipelines`), Subscription for `openshift-pipelines-operator-rh` on `latest` channel
+- [ ] Create `applications/tekton.yaml` — ArgoCD Application pointing at `cluster-configs/tekton/`
+- [ ] Add to `applications/kustomization.yaml`
 
-## Migration Checklist
+### 1.2 RHDH Tekton Plugin
 
-### 1. Dynamic Plugins (`dynamic-plugins.yaml`)
+- [ ] Add Tekton plugin to `dynamic-plugins.yaml`:
+  ```yaml
+  - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-tekton:{{inherit}}'
+    disabled: false
+    pluginConfig:
+      dynamicPlugins:
+        frontend:
+          backstage-community-plugin-tekton:
+            mountPoints:
+              - mountPoint: entity.page.ci/cards
+                importName: TektonCI
+                config:
+                  layout:
+                    gridColumn: 1 / -1
+  ```
+- [ ] RBAC already has `tekton.view.read` in `role:default/plugins` — verify it works
 
-Add the following plugins (all using OCI or bundled paths):
+### 1.3 Tekton Pipeline Definition
 
-- [x] **Topology** — `./dynamic-plugins/dist/backstage-community-plugin-topology` (bundled)
-- [x] **Scaffolder utils** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}` (OCI)
+- [ ] Create a reusable Tekton Pipeline for Quarkus apps (build + deploy):
+  - `git-clone` → `maven` (or `s2i-java`) → `buildah` → `kubernetes-actions` (deploy)
+  - Store in the software template repo (`ultraJeff/rhdh-software-templates`) or in-cluster via GitOps
+- [ ] Decide on image registry: internal OpenShift registry vs external
 
-### 2. App Config (`app-config-production.yaml`)
+## Phase 2: Install Dev Spaces
 
-- [x] Add custom software templates catalog location
-- [x] Add `github.com` to `backend.reading.allow`
-- [x] Normalize `githubOrg.id` from `ultraJeffOrg` to `githubOrg` (cosmetic)
+### 2.1 Operator Installation
 
-### 3. RBAC Policies (`rbac-policies.yaml`)
+- [ ] Create `cluster-configs/devspaces/` directory with:
+  - `kustomization.yaml`
+  - `devspaces-operator.yaml` — Subscription for `devspaces` operator on `stable` channel
+  - `devspaces-instance.yaml` — `CheCluster` CR with default configuration
+- [ ] Create `applications/devspaces.yaml` — ArgoCD Application
+- [ ] Add to `applications/kustomization.yaml`
 
-Add missing permissions:
+### 2.2 RHDH Dev Spaces Integration
 
-- [x] `extensions.plugin.configuration.read` — read, allow (for Extensions UI)
-- [x] `extensions.plugin.configuration.write` — create, allow (for Extensions UI)
-- [x] `extensions.plugin.configuration.delete` — delete, allow (for Extensions UI)
+- [ ] Add `devSpaces` config to `app-config-production.yaml`:
+  ```yaml
+  devSpaces:
+    defaultNamespace: <username>-devspaces
+  ```
+  (The namespace pattern may need adjustment based on CheCluster config)
 
-### 4. Backstage CR (`rhdh-instance.yaml`)
+## Phase 3: Quarkus Software Template
 
-- [x] Add `automountServiceAccountToken: true` to deployment patch (required for in-cluster Kubernetes plugin auth)
+### 3.1 Template Skeleton
 
-### 5. New Files
+Create a new template in `ultraJeff/rhdh-software-templates` that:
 
-- [x] **`kubernetes-rbac.yaml`** — ClusterRole `rhdh-kubernetes-reader` + ClusterRoleBinding to `default` ServiceAccount in `rhdh` namespace
-- [x] **`console-link.yaml`** — ConsoleLink to add RHDH to the OpenShift console Application Menu
-- [x] Update **`kustomization.yaml`** to include both new resources
+- [ ] Prompts for: component name, group ID, artifact ID, description, owner
+- [ ] Scaffolds a Quarkus project (Maven, REST starter, health extensions)
+- [ ] Includes a `devfile.yaml` for Dev Spaces (Quarkus universal developer image)
+- [ ] Includes a `catalog-info.yaml` with:
+  - `backstage.io/techdocs-ref` (if TechDocs is added later)
+  - `backstage.io/kubernetes-id` annotation for Topology/Kubernetes plugins
+  - Dev Spaces link annotation (`devspaces.io/editor-url` or equivalent)
+  - Tekton pipeline annotation for CI tab
+- [ ] Includes a `Dockerfile` or uses s2i for container builds
+- [ ] Includes OpenShift manifests (Deployment, Service, Route) or a Helm chart
 
-### 6. Extensions File Seeding
+### 3.2 Template Actions
 
-- [x] Init container `seed-extensions-file` added to Backstage CR deployment patch — creates `installed-dynamic-plugins.yaml` on the PVC if it doesn't already exist
+- [ ] `publish:github` — create repo under the user's GitHub org
+- [ ] `catalog:register` — register the new component in RHDH
+- [ ] `kubernetes:apply` — create the Tekton PipelineRun for initial build (or trigger via webhook)
 
-## Removed Items
+### 3.3 Tekton Trigger (Optional)
 
-The following were in the original plan but removed because the required infrastructure is not installed on tallgeese:
+- [ ] Add a Tekton `TriggerTemplate` + `EventListener` for GitHub webhook-driven builds
+- [ ] Configure GitHub webhook in the template's `publish:github` step
 
-- **Orchestrator** — SonataFlow / Serverless Logic operators, orchestrator plugins, RBAC policies, and `auth.externalAccess` for orchestrator. All removed from repo.
-- **Tekton CI plugin** — No Tekton Pipelines on this cluster.
-- **Quay plugin** — No Quay registry; `quay.uiUrl` config not needed.
-- **TechDocs** (backend + frontend) — No doc builder/storage backend configured.
-- **Tech Radar** — No data source configured.
-- **Security Insights** — Requires GitHub Advanced Security.
-- **Dev Spaces** — Not installed; `devSpaces.defaultNamespace` config not needed.
-- **OCM** — No `catalog.providers.ocm` config.
-- **Adoption Insights** — Plugin not in use.
+## Phase 4: Validation
+
+- [ ] Create a test app using the template from the RHDH UI
+- [ ] Verify the Tekton pipeline runs and completes (CI tab in catalog entity)
+- [ ] Verify the Topology tab shows the deployed workload
+- [ ] Verify the Dev Spaces link opens a workspace with the Quarkus project
+- [ ] Verify the Kubernetes tab shows pods/logs
+
+## Dependencies & Decisions
+
+| Decision | Options | Notes |
+|----------|---------|-------|
+| Image registry | Internal OpenShift registry / External (Quay.io, GHCR) | Internal is simplest; external needs pull secrets |
+| Pipeline style | `buildah` + raw manifests / s2i / Helm + ArgoCD | Helm + ArgoCD gives GitOps-native deployment |
+| Dev Spaces devfile | Universal Developer Image / custom | UDI is simplest, custom allows pre-baked tools |
+| Tekton triggers | Webhook-driven / manual PipelineRun only | Webhooks need a publicly routable EventListener |
