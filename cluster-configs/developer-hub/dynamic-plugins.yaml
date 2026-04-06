@@ -35,7 +35,12 @@ data:
       # RBAC plugin (bundled in 1.9)
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
         disabled: false
-      # Orchestrator plugins disabled - SonataFlow operator not installed on this cluster
+      # Topology plugin (bundled in 1.9)
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-topology
+        disabled: false
+      # Scaffolder utils (OCI)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}'
+        disabled: false
       # Notifications plugins (bundled in 1.9)
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false

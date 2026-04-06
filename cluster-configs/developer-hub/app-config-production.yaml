@@ -40,11 +40,6 @@ data:
             clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
             clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
             disableIdentityResolution: true
-      externalAccess:
-      - options:
-          subject: orchestrator
-          token: ${BACKEND_SECRET}
-        type: static
     backend:
       auth:
         externalAccess:
@@ -58,10 +53,15 @@ data:
       reading:
         allow:
           - host: raw.githubusercontent.com
+          - host: github.com
     catalog:
       locations:
         - type: url
           target: https://raw.githubusercontent.com/redhat-appstudio/tssc-sample-templates/release-v1.8.x/all.yaml
+        - type: url
+          target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
+          rules:
+            - allow: [Template]
       providers:
         keycloakOrg:
           default:
@@ -88,7 +88,7 @@ data:
               timeout:
                 minutes: 15
         githubOrg:
-          id: ultraJeffOrg
+          id: githubOrg
           githubUrl: "https://github.com"
           orgs:
             - ${GITHUB_INTEGRATION_ORGANIZATION}

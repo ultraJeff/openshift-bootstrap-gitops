@@ -14,7 +14,6 @@ This repository contains standardized configurations for bootstrapping new OpenS
 │   ├── rhoai.yaml              # Red Hat OpenShift AI (external repo)
 │   ├── service-mesh.yaml       # OpenShift Service Mesh 3 (external repo)
 │   ├── keda.yaml               # KEDA Autoscaling (external repo)
-│   ├── orchestrator.yaml       # Serverless + Serverless Logic operators
 │   ├── security.yaml           # OAuth, htpasswd, admin RBAC
 │   └── storage.yaml            # LVM Storage + Image Registry
 ├── cluster-configs/            # Cluster-level Kustomize configurations
@@ -25,7 +24,6 @@ This repository contains standardized configurations for bootstrapping new OpenS
 │   ├── gitops/                 # OpenShift GitOps (ArgoCD instance)
 │   ├── keycloak/               # Keycloak (RHBK)
 │   │   └── secrets/            # Manual secrets (not in GitOps)
-│   ├── orchestrator/           # Serverless + Serverless Logic operators
 │   ├── security/               # htpasswd OAuth, admin RBAC
 │   └── storage/                # LVM Storage, StorageClass, Image Registry
 ├── demos/                      # Demo applications (not deployed via ArgoCD)
@@ -63,7 +61,6 @@ oc apply -k cluster-configs/gitops/
 oc apply -k cluster-configs/security/
 
 # 4. Platform operators
-oc apply -k cluster-configs/orchestrator/
 oc apply -k cluster-configs/acm/
 oc apply -k cluster-configs/acs/
 
@@ -102,7 +99,6 @@ oc get pods -n rhdh
 |-------------|--------|-----------------|
 | `developer-hub` | `cluster-configs/developer-hub` | Yes |
 | `keycloak` | `cluster-configs/keycloak` | Yes |
-| `orchestrator` | `cluster-configs/orchestrator` | No |
 | `security` | `cluster-configs/security` | No |
 | `storage` | `cluster-configs/storage` | No |
 

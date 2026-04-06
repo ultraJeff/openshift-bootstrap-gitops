@@ -2,13 +2,14 @@
 
 **Source**: `rhdh-bootstrap` (k4mmh cluster)
 **Target**: `openshift-bootstrap-gitops` (tallgeese homelab)
-**Status**: In progress — Orchestrator done, several items remain
+**Cluster**: `api.tallgeese.ultra.lab:6443`
+**RHDH Version**: 1.9.0 (operator auto-upgraded from 1.8, subscription on `fast-1.8` channel)
 
 ## Context
 
-Both repos manage RHDH deployments via ArgoCD. The `rhdh-bootstrap` repo has additional plugins, configuration, and RBAC policies that the homelab repo lacks. Both repos have been upgraded to RHDH 1.9 (operator auto-upgrade), but the homelab is missing several features.
+Both repos manage RHDH deployments via ArgoCD. The `rhdh-bootstrap` repo has additional plugins and configuration that the homelab repo lacks. The RHDH operator auto-upgraded to 1.9 on tallgeese.
 
-The RHDH operator on 1.9 always injects `includes: - dynamic-plugins.default.yaml` into the operator-managed ConfigMap regardless of what the user ConfigMap specifies. The operator also downloads and merges the catalog index from `registry.redhat.io`. The `dynamic-plugins-registry-auth` secret (created manually from the cluster's global pull-secret) is required for the init container's `skopeo` to authenticate.
+**Not installed on tallgeese** (do not plan for these): Orchestrator / SonataFlow, Tekton Pipelines, Dev Spaces, Quay registry.
 
 ## RHDH 1.9 Operator Behaviors (Lessons Learned)
 
@@ -24,84 +25,47 @@ The RHDH operator on 1.9 always injects `includes: - dynamic-plugins.default.yam
 
 Add the following plugins (all using OCI or bundled paths):
 
-- [ ] **Topology** — `./dynamic-plugins/dist/backstage-community-plugin-topology` (bundled)
-- [ ] **Quay** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-quay:{{inherit}}` (OCI)
-- [ ] **Scaffolder utils** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}` (OCI)
-- [ ] **TechDocs backend** — `./dynamic-plugins/dist/backstage-plugin-techdocs-backend-dynamic` (bundled)
-- [ ] **TechDocs frontend** — `./dynamic-plugins/dist/backstage-plugin-techdocs` (bundled)
-- [ ] **Tekton CI** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-tekton:{{inherit}}` (OCI, includes pluginConfig for mount points)
-- [ ] **Tech Radar** — `./dynamic-plugins/dist/backstage-community-plugin-tech-radar` (bundled)
-- [ ] **Security Insights** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-backstage-plugin-security-insights:{{inherit}}` (OCI)
-- [ ] **OCM** — `disabled: true` (requires `catalog.providers.ocm` config not present)
-
-Decision: Use `{{inherit}}` or pinned versions for OCI plugins?
-- `{{inherit}}` auto-resolves from the catalog index (follows operator upgrades)
-- Pinned versions (e.g. `bs_1.45.3__1.0.2`) are more stable but require manual updates
+- [x] **Topology** — `./dynamic-plugins/dist/backstage-community-plugin-topology` (bundled)
+- [x] **Scaffolder utils** — `oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}` (OCI)
 
 ### 2. App Config (`app-config-production.yaml`)
 
-- [ ] Add custom software templates catalog location:
-  ```yaml
-  - type: url
-    target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
-    rules:
-      - allow: [Template]
-  ```
-- [ ] Add `github.com` to `backend.reading.allow`:
-  ```yaml
-  - host: github.com
-  ```
-- [ ] Add `quay` config (required by Quay OCI plugin):
-  ```yaml
-  quay:
-    uiUrl: https://quay.io
-  ```
-- [ ] Add `devSpaces` config:
-  ```yaml
-  devSpaces:
-    defaultNamespace: <username>-devspaces
-  ```
-- [ ] Normalize `githubOrg.id` from `ultraJeffOrg` to `githubOrg` (cosmetic)
+- [x] Add custom software templates catalog location
+- [x] Add `github.com` to `backend.reading.allow`
+- [x] Normalize `githubOrg.id` from `ultraJeffOrg` to `githubOrg` (cosmetic)
 
 ### 3. RBAC Policies (`rbac-policies.yaml`)
 
 Add missing permissions:
 
-- [ ] `kubernetes.clusters.read` — read, allow (for Kubernetes plugin)
-- [ ] `kubernetes.resources.read` — read, allow (for Kubernetes plugin)
-- [ ] `catalog-entity` — read, allow (general catalog access)
-- [ ] `adoption-insights.events.read` — read, allow (Adoption Insights plugin)
-- [ ] `admin_plugins` role with:
-  - `orchestrator.workflow` read
-  - `orchestrator.workflow.use` update
-  - `orchestrator.workflowAdminView` read
-  - `orchestrator.instanceAdminView` read
-  - `extensions.plugin.configuration.read` read
-  - `extensions.plugin.configuration.write` create
-  - `extensions.plugin.configuration.delete` delete
-- [ ] Bind `admin_plugins` role to `user:default/admin`
+- [x] `extensions.plugin.configuration.read` — read, allow (for Extensions UI)
+- [x] `extensions.plugin.configuration.write` — create, allow (for Extensions UI)
+- [x] `extensions.plugin.configuration.delete` — delete, allow (for Extensions UI)
 
 ### 4. Backstage CR (`rhdh-instance.yaml`)
 
-- [ ] Add `automountServiceAccountToken: true` to deployment patch (required for in-cluster Kubernetes plugin auth)
+- [x] Add `automountServiceAccountToken: true` to deployment patch (required for in-cluster Kubernetes plugin auth)
 
 ### 5. New Files
 
-- [x] **`kubernetes-rbac.yaml`** — ClusterRole `rhdh-kubernetes-reader` granting read access to pods, deployments, services, routes, builds, etc. + ClusterRoleBinding to `default` ServiceAccount in `rhdh` namespace
-- [x] **`console-link.yaml`** — ConsoleLink to add RHDH to the OpenShift console Application Menu (tallgeese URL)
+- [x] **`kubernetes-rbac.yaml`** — ClusterRole `rhdh-kubernetes-reader` + ClusterRoleBinding to `default` ServiceAccount in `rhdh` namespace
+- [x] **`console-link.yaml`** — ConsoleLink to add RHDH to the OpenShift console Application Menu
 - [x] Update **`kustomization.yaml`** to include both new resources
 
-### 6. Orchestrator (DONE)
+### 6. Extensions File Seeding
 
-- [x] Install the OpenShift Serverless Logic / SonataFlow operator → `cluster-configs/orchestrator/`
-- [x] Add Orchestrator plugins (1.8.2) to `dynamic-plugins.yaml`
-- [x] Pin RHDH operator to `fast-1.8` channel for compatibility
-- [x] `sonataflow-platform-data-index-service` auto-created by RHDH operator via `dependencies: - ref: sonataflow`
-- [x] ArgoCD Application created at `applications/orchestrator.yaml`
+- [x] Init container `seed-extensions-file` added to Backstage CR deployment patch — creates `installed-dynamic-plugins.yaml` on the PVC if it doesn't already exist
 
-### 7. Extensions File Seeding
+## Removed Items
 
-The `installed-dynamic-plugins.yaml` file must exist on the `dynamic-plugins-root` PVC for the extensions installation feature to work. The `rhdh-bootstrap` repo has an `init.sh` Phase 5 that handles this automatically. For the homelab:
+The following were in the original plan but removed because the required infrastructure is not installed on tallgeese:
 
-- [ ] Manually create the file via `oc exec` if not present, or
-- [ ] Add a Job/init script to the GitOps repo that seeds it
+- **Orchestrator** — SonataFlow / Serverless Logic operators, orchestrator plugins, RBAC policies, and `auth.externalAccess` for orchestrator. All removed from repo.
+- **Tekton CI plugin** — No Tekton Pipelines on this cluster.
+- **Quay plugin** — No Quay registry; `quay.uiUrl` config not needed.
+- **TechDocs** (backend + frontend) — No doc builder/storage backend configured.
+- **Tech Radar** — No data source configured.
+- **Security Insights** — Requires GitHub Advanced Security.
+- **Dev Spaces** — Not installed; `devSpaces.defaultNamespace` config not needed.
+- **OCM** — No `catalog.providers.ocm` config.
+- **Adoption Insights** — Plugin not in use.

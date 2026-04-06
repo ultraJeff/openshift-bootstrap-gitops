@@ -12,7 +12,7 @@ spec:
   location: ApplicationMenu
   # The RHDH operator creates a route named "backstage-developer-hub" in the rhdh namespace.
   # Replace this URL with the actual route: oc get route backstage-developer-hub -n rhdh -o jsonpath='{.spec.host}'
-  href: https://backstage-developer-hub-rhdh.apps.tallgeese.lab
+  href: https://backstage-developer-hub-rhdh.apps.tallgeese.ultra.lab
   text: Developer Hub
   applicationMenu:
     section: Red Hat Applications

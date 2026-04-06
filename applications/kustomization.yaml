@@ -8,7 +8,6 @@ resources:
   # Platform infrastructure (in-repo)
   - storage.yaml
   - security.yaml
-  - orchestrator.yaml
   - node-configs.yaml
 
   # Applications with manual secret prerequisites (in-repo)

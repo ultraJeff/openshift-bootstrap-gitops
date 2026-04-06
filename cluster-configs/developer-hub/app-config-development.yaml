@@ -15,11 +15,6 @@ data:
       baseUrl: ${BACKEND_URL}
     auth:
       environment: development
-      externalAccess:
-      - options:
-          subject: orchestrator
-          token: ${BACKEND_SECRET}
-        type: static
       providers:
         guest:
           dangerouslyAllowOutsideDevelopment: true

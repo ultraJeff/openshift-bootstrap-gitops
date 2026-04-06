@@ -21,6 +21,20 @@ spec:
       spec:
         template:
           spec:
+            automountServiceAccountToken: true
+            initContainers:
+              - name: seed-extensions-file
+                image: registry.access.redhat.com/ubi9/ubi-micro:latest
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    if [ ! -f /dynamic-plugins-root/installed-dynamic-plugins.yaml ]; then
+                      echo "plugins: []" > /dynamic-plugins-root/installed-dynamic-plugins.yaml
+                    fi
+                volumeMounts:
+                  - name: dynamic-plugins-root
+                    mountPath: /dynamic-plugins-root
             volumes:
               - $patch: replace
                 name: dynamic-plugins-root
