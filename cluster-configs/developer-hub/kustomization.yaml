@@ -12,6 +12,8 @@ resources:
 - app-config-production.yaml
 - rbac-policies.yaml
 - rhdh-instance.yaml
+- console-link.yaml
+- kubernetes-rbac.yaml
 
 commonLabels:
   config.openshift.io/component: developer-hub

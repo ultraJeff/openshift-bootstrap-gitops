@@ -87,9 +87,9 @@ Add missing permissions:
 
 ### 5. New Files
 
-- [ ] **`kubernetes-rbac.yaml`** — ClusterRole `rhdh-kubernetes-reader` granting read access to pods, deployments, services, routes, builds, etc. + ClusterRoleBinding to `default` ServiceAccount in `rhdh` namespace
-- [ ] **`console-link.yaml`** — ConsoleLink to add RHDH to the OpenShift console Application Menu (needs tallgeese-specific URL)
-- [ ] Update **`kustomization.yaml`** to include both new resources
+- [x] **`kubernetes-rbac.yaml`** — ClusterRole `rhdh-kubernetes-reader` granting read access to pods, deployments, services, routes, builds, etc. + ClusterRoleBinding to `default` ServiceAccount in `rhdh` namespace
+- [x] **`console-link.yaml`** — ConsoleLink to add RHDH to the OpenShift console Application Menu (tallgeese URL)
+- [x] Update **`kustomization.yaml`** to include both new resources
 
 ### 6. Orchestrator (DONE)
 

@@ -1,0 +1,19 @@
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: developer-hub
+  labels:
+    config.openshift.io/component: developer-hub
+    config.openshift.io/managed-by: gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  location: ApplicationMenu
+  # The RHDH operator creates a route named "backstage-developer-hub" in the rhdh namespace.
+  # Replace this URL with the actual route: oc get route backstage-developer-hub -n rhdh -o jsonpath='{.spec.host}'
+  href: https://backstage-developer-hub-rhdh.apps.tallgeese.lab
+  text: Developer Hub
+  applicationMenu:
+    section: Red Hat Applications
+    imageURL: data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOCAzOCI+PHBhdGggZD0iTTE5IDBDOC41IDAgMCA4LjUgMCAxOXM4LjUgMTkgMTkgMTkgMTktOC41IDE5LTE5UzI5LjUgMCAxOSAwem0wIDM0Yy04LjMgMC0xNS02LjctMTUtMTVTMTAuNyA0IDE5IDRzMTUgNi43IDE1IDE1LTYuNyAxNS0xNSAxNXoiIGZpbGw9IiNFRTAwMDAiLz48cGF0aCBkPSJNMjYuNSAxNi41bC03LTRjLS4zLS4yLS43LS4yLTEgMGwtNyA0Yy0uMy4yLS41LjUtLjUuOXY4Yy4xLjMuMy42LjUuOGw3IDRjLjMuMi43LjIgMSAwbDctNGMuMy0uMi41LS41LjUtLjl2LThjLS4xLS4zLS4yLS42LS41LS44eiIgZmlsbD0iI0VFMDAwMCIvPjwvc3ZnPg==
