@@ -5,6 +5,7 @@ metadata:
   name: openshift-gitops
   namespace: openshift-gitops
 spec:
+  kustomizeBuildOptions: "--enable-helm"
   # Custom health checks - treat Pending PVCs (WaitForFirstConsumer) as Healthy
   resourceHealthChecks:
     - group: ""
