@@ -31,6 +31,9 @@ resources:
 # Network Observability (NetObserv)
 - networking/
 
+# Cluster maintenance (image/pod pruning)
+- maintenance/
+
 commonLabels:
   config.openshift.io/bootstrap: "true"
   config.openshift.io/managed-by: gitops

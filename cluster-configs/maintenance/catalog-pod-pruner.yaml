@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: catalog-pod-pruner
+  namespace: openshift-marketplace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: catalog-pod-pruner
+  namespace: openshift-marketplace
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: catalog-pod-pruner
+  namespace: openshift-marketplace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: catalog-pod-pruner
+subjects:
+- kind: ServiceAccount
+  name: catalog-pod-pruner
+  namespace: openshift-marketplace
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: catalog-pod-pruner
+  namespace: openshift-marketplace
+spec:
+  schedule: "0 4 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: catalog-pod-pruner
+          restartPolicy: OnFailure
+          containers:
+          - name: pruner
+            image: registry.redhat.io/openshift4/ose-cli-rhel9:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Pruning completed catalog source pods..."
+              DELETED=$(oc delete pods -n openshift-marketplace \
+                --field-selector=status.phase==Succeeded \
+                --ignore-not-found 2>&1)
+              echo "$DELETED"
+              COUNT=$(echo "$DELETED" | grep -c "deleted" || true)
+              echo "Pruned $COUNT completed pod(s)"
