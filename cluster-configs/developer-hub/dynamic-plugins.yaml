@@ -39,7 +39,7 @@ data:
       - package: ./dynamic-plugins/dist/backstage-community-plugin-topology
         disabled: false
       # Scaffolder utils (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:bs_1.49.4__4.1.2'
         disabled: false
       # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
