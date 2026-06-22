@@ -75,6 +75,7 @@ spec:
       enabled: true
   monitoring:
     enabled: true
-  flavours:
-    - name: lightspeed
-      enabled: false
+  # TODO: Re-enable once 1.10 operator CRD is active (flavours field is new in 1.10)
+  # flavours:
+  #   - name: lightspeed
+  #     enabled: false
