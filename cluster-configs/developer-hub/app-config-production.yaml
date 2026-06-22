@@ -87,6 +87,15 @@ data:
                 seconds: 15
               timeout:
                 minutes: 15
+          ultraJeff:
+            organization: ultraJeff
+            schedule:
+              frequency:
+                minutes: 30
+              initialDelay:
+                seconds: 15
+              timeout:
+                minutes: 15
         githubOrg:
           id: githubOrg
           githubUrl: "https://github.com"
