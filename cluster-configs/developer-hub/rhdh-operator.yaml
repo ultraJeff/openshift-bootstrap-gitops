@@ -16,9 +16,7 @@ metadata:
   namespace: rhdh-operator
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-spec:
-  targetNamespaces:
-  - rhdh
+spec: {}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
