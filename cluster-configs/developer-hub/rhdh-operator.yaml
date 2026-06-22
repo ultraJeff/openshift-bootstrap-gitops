@@ -16,7 +16,9 @@ metadata:
   namespace: rhdh-operator
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-spec: {}
+spec:
+  targetNamespaces:
+  - rhdh
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -26,8 +28,8 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  # fast-1.8: RHDH 1.8.x line. Use "fast" for latest y-stream.
-  channel: fast-1.8
+  # fast-1.10: RHDH 1.10.x (Backstage 1.49.4). Use "fast" for latest y-stream.
+  channel: fast-1.10
   installPlanApproval: Automatic
   name: rhdh
   source: redhat-operators

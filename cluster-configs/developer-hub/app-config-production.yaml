@@ -128,6 +128,11 @@ data:
       enabled: true
       rbac:
         policies-csv-file: /opt/app-root/src/rbac-policies.csv
+        policyFileReload: true
         admin:
           users:
             - name: user:default/admin
+        pluginsWithPermission:
+          - catalog
+          - scaffolder
+          - permission

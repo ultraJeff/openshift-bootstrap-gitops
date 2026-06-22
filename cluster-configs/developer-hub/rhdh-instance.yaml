@@ -73,3 +73,8 @@ spec:
     # Route configuration
     route:
       enabled: true
+  monitoring:
+    enabled: true
+  flavours:
+    - name: lightspeed
+      enabled: false

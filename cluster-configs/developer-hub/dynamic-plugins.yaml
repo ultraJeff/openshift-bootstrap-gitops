@@ -10,38 +10,38 @@ data:
     includes:
     - dynamic-plugins.default.yaml
     plugins:
-      # Disable old ArgoCD plugins from defaults (unbundled in 1.9)
+      # Disable old ArgoCD plugins from defaults
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
         disabled: true
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: true
-      # Catalog and GitHub plugins (bundled in 1.9)
+      # Catalog and GitHub plugins
       - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-keycloak-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
         disabled: false
-      # Kubernetes plugins (bundled in 1.9)
+      # Kubernetes plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes-backend-dynamic
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
       # ArgoCD integration (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:bs_1.45.3__1.0.2'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:{{inherit}}'
         disabled: false
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:bs_1.45.3__2.4.3'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:{{inherit}}'
         disabled: false
-      # RBAC plugin (bundled in 1.9)
+      # RBAC plugin
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
         disabled: false
-      # Topology plugin (bundled in 1.9)
+      # Topology plugin
       - package: ./dynamic-plugins/dist/backstage-community-plugin-topology
         disabled: false
       # Scaffolder utils (OCI)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:{{inherit}}'
         disabled: false
-      # Notifications plugins (bundled in 1.9)
+      # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-signals
