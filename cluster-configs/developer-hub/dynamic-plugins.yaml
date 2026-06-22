@@ -28,9 +28,9 @@ data:
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
       # ArgoCD integration (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:{{inherit}}'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:bs_1.49.4__1.4.0'
         disabled: false
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:{{inherit}}'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:bs_1.49.4__2.8.0'
         disabled: false
       # RBAC plugin
       - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
