@@ -33,6 +33,7 @@ data:
     p, role:default/admin_plugins, extensions.plugin.configuration.read, read, allow
     p, role:default/admin_plugins, extensions.plugin.configuration.write, create, allow
     p, role:default/admin_plugins, extensions.plugin.configuration.delete, delete, allow
+    p, role:default/admin_plugins, adoption-insights.events.read, read, allow
     g, user:default/admin, role:default/location_read
     g, user:default/admin, role:default/platformengineer
     g, user:default/admin, role:default/scaffolder_execute
