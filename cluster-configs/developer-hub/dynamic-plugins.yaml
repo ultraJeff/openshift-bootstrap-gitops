@@ -15,6 +15,9 @@ data:
         disabled: true
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: true
+      # GitHub scaffolder actions (publish:github)
+      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic
+        disabled: false
       # Catalog and GitHub plugins
       - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-keycloak-dynamic
         disabled: false
