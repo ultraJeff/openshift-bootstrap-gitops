@@ -57,8 +57,6 @@ data:
     catalog:
       locations:
         - type: url
-          target: https://raw.githubusercontent.com/redhat-appstudio/tssc-sample-templates/release-v1.8.x/all.yaml
-        - type: url
           target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
           rules:
             - allow: [Template]
