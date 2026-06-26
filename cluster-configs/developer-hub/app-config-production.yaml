@@ -59,7 +59,7 @@ data:
         - type: url
           target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
           rules:
-            - allow: [Template]
+            - allow: [Template, Group]
       providers:
         keycloakOrg:
           default:
