@@ -1,0 +1,76 @@
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-master-crio-image-prune
+  labels:
+    machineconfiguration.openshift.io/role: master
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    systemd:
+      units:
+        - name: crio-image-prune.service
+          enabled: false
+          contents: |
+            [Unit]
+            Description=Prune unused CRI-O container images
+            Wants=crio.service
+            After=crio.service
+
+            [Service]
+            Type=oneshot
+            ExecStart=/usr/bin/crictl rmi --prune
+            TimeoutStartSec=300
+        - name: crio-image-prune.timer
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Run CRI-O image prune daily at 2am
+
+            [Timer]
+            OnCalendar=*-*-* 02:00:00
+            RandomizedDelaySec=1800
+            Persistent=true
+
+            [Install]
+            WantedBy=timers.target
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-worker-crio-image-prune
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.4.0
+    systemd:
+      units:
+        - name: crio-image-prune.service
+          enabled: false
+          contents: |
+            [Unit]
+            Description=Prune unused CRI-O container images
+            Wants=crio.service
+            After=crio.service
+
+            [Service]
+            Type=oneshot
+            ExecStart=/usr/bin/crictl rmi --prune
+            TimeoutStartSec=300
+        - name: crio-image-prune.timer
+          enabled: true
+          contents: |
+            [Unit]
+            Description=Run CRI-O image prune daily at 2am
+
+            [Timer]
+            OnCalendar=*-*-* 02:00:00
+            RandomizedDelaySec=1800
+            Persistent=true
+
+            [Install]
+            WantedBy=timers.target
