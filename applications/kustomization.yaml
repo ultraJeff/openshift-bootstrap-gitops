@@ -9,6 +9,8 @@ resources:
   - storage.yaml
   - security.yaml
   - node-configs.yaml
+  - tekton.yaml
+  - devspaces.yaml
 
   # Applications with manual secret prerequisites (in-repo)
   - keycloak.yaml

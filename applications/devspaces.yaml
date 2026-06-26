@@ -1,0 +1,33 @@
+---
+# ArgoCD Application for Red Hat OpenShift Dev Spaces
+#
+# Installs the Dev Spaces operator and creates a CheCluster instance.
+# Workspaces are created in per-user namespaces (<username>-devspaces).
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devspaces
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/devspaces
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-devspaces
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

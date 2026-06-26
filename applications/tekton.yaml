@@ -1,0 +1,32 @@
+---
+# ArgoCD Application for OpenShift Pipelines (Tekton)
+#
+# Installs the OpenShift Pipelines operator. The operator auto-creates the
+# openshift-pipelines namespace and a default TektonConfig.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tekton
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/tekton
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
