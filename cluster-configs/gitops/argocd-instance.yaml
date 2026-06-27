@@ -101,6 +101,7 @@ spec:
   extraConfig:
     accounts.admin: 'apiKey, login'
     accounts.developer-hub: 'apiKey, login'
+    accounts.developer-hub.password: '$2y$10$e7xeIzQlbcJXHOgYVKQ7W.ghGLAZgHNUrzIC7oqdHsS2Sx7A9vsju' # notsecret - bcrypt hash
   redis:
     resources:
       limits:
