@@ -97,6 +97,7 @@ data:
     integrations:
       github:
         - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
+          token: ${GITHUB_PAT}
           apps:
             - appId: ${GITHUB_INTEGRATION_APP_ID}
               clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
