@@ -95,7 +95,7 @@ spec:
       # OpenShift htpasswd 'admin' user -> ArgoCD admin
       g, admin, role:admin
       # Service accounts
-      g, developer-hub, role:readonly
+      g, developer-hub, role:admin
     # Include both groups and preferred_username (for individual user matching)
     scopes: '[groups, preferred_username]'
   extraConfig:
