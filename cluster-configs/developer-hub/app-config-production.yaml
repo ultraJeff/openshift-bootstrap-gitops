@@ -94,18 +94,6 @@ data:
                 seconds: 15
               timeout:
                 minutes: 15
-        githubOrg:
-          id: githubOrg
-          githubUrl: "https://github.com"
-          orgs:
-            - ${GITHUB_INTEGRATION_ORGANIZATION}
-          schedule:
-            frequency:
-              minutes: 30
-            initialDelay:
-              seconds: 15
-            timeout:
-              minutes: 15
     integrations:
       github:
         - host: ${GITHUB_INTEGRATION_HOST_DOMAIN}
