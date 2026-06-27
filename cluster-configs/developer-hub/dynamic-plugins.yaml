@@ -50,6 +50,9 @@ data:
       # Scaffolder utils (OCI)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:bs_1.49.4__4.1.2'
         disabled: false
+      # Scaffolder HTTP request action
+      - package: ./dynamic-plugins/dist/roadiehq-scaffolder-backend-module-http-request-dynamic
+        disabled: false
       # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false
