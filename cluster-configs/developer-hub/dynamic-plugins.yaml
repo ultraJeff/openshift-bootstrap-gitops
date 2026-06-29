@@ -10,9 +10,10 @@ data:
     includes:
     - dynamic-plugins.default.yaml
     plugins:
-      # Disable old ArgoCD plugins from defaults
+      # ArgoCD backend (Roadie) — provides /api/argocd/* routes for the CD tab
       - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
-        disabled: true
+        disabled: false
+      # Disable old ArgoCD frontend from defaults (replaced by OCI community frontend)
       - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
         disabled: true
       # GitHub scaffolder actions (publish:github)
@@ -30,9 +31,7 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
         disabled: false
-      # ArgoCD integration (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:bs_1.49.4__1.4.0'
-        disabled: false
+      # ArgoCD frontend (OCI community plugin)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:bs_1.49.4__2.8.0'
         disabled: false
       # RBAC plugin
