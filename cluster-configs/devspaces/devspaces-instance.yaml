@@ -15,6 +15,7 @@ spec:
     devfileRegistry: {}
     pluginRegistry: {}
   devEnvironments:
+    startTimeoutSeconds: 600
     defaultNamespace:
       template: <username>-devspaces
     storage:
