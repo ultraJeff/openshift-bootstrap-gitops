@@ -1,0 +1,34 @@
+---
+# ArgoCD Application for Migration Toolkit for Applications (external repo)
+#
+# Deploys MTA 8.1 operator and Tackle instance for application
+# migration analysis. Integrates with RHDH Orchestrator workflows.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mta
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/mta-demo.git
+    targetRevision: main
+    path: operator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-mta
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

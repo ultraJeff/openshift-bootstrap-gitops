@@ -24,3 +24,4 @@ resources:
   - rhoai.yaml
   - service-mesh.yaml
   - keda.yaml
+  - mta.yaml

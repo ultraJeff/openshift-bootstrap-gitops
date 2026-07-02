@@ -97,6 +97,15 @@ data:
         disabled: false
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:bs_1.49.4__1.5.4'
         disabled: false
+      # MTA plugins (OCI)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-frontend:bs_1.49.4__0.4.2'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-backend:bs_1.49.4__0.5.3'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider:bs_1.49.4__0.4.1'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-scaffolder-backend-module-mta:bs_1.49.4__0.5.1'
+        disabled: false
       # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false
