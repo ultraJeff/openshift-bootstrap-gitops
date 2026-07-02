@@ -128,6 +128,8 @@ data:
     orchestrator:
       sonataflow:
         baseUrl: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
+    mta:
+      url: https://mta-openshift-mta.apps.tallgeese.ultra.lab
     extensions:
       installation:
         enabled: true
