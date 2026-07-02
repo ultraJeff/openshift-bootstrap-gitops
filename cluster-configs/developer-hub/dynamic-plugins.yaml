@@ -75,6 +75,28 @@ data:
       # Scaffolder HTTP request action
       - package: ./dynamic-plugins/dist/roadiehq-scaffolder-backend-module-http-request-dynamic
         disabled: false
+      # Orchestrator plugins (OCI)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator:bs_1.49.4__5.7.13'
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-orchestrator:
+                mountPoints:
+                  - mountPoint: entity.page.workflows/cards
+                    importName: OrchestratorPage
+                    config:
+                      layout:
+                        gridColumn: 1 / -1
+                entityTabs:
+                  - path: /workflows
+                    title: Workflows
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator-backend:bs_1.49.4__8.9.5'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets:bs_1.49.4__1.10.8'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:bs_1.49.4__1.5.4'
+        disabled: false
       # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false

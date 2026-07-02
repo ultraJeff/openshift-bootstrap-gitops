@@ -125,6 +125,9 @@ data:
         - group: tekton.dev
           apiVersion: v1
           plural: taskruns
+    orchestrator:
+      sonataflow:
+        baseUrl: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
     extensions:
       installation:
         enabled: true
@@ -142,3 +145,4 @@ data:
           - catalog
           - scaffolder
           - permission
+          - orchestrator

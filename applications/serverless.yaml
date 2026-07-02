@@ -1,0 +1,33 @@
+---
+# ArgoCD Application for OpenShift Serverless + Serverless Logic
+#
+# Installs OpenShift Serverless (Knative) and Serverless Logic
+# (SonataFlow) operators, plus the SonataFlowPlatform CR for
+# RHDH Orchestrator workflows.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: serverless
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/serverless
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
