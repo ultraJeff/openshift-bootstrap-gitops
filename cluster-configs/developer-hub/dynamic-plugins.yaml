@@ -102,8 +102,9 @@ data:
         disabled: false
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-backend:bs_1.49.4__0.5.3'
         disabled: false
+      # MTA entity provider — disabled until mta.providerAuth is configured
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider:bs_1.49.4__0.4.1'
-        disabled: false
+        disabled: true
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-scaffolder-backend-module-mta:bs_1.49.4__0.5.1'
         disabled: false
       # Notifications plugins
