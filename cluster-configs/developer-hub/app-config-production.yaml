@@ -126,10 +126,10 @@ data:
           apiVersion: v1
           plural: taskruns
     orchestrator:
+      dataIndexService:
+        url: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
       sonataflow:
         baseUrl: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
-    mta:
-      url: https://mta-openshift-mta.apps.tallgeese.ultra.lab
     extensions:
       installation:
         enabled: true
