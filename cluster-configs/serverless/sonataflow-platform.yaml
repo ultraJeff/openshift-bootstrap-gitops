@@ -7,4 +7,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-spec: {}
+spec:
+  services:
+    dataIndex:
+      enabled: true
+    jobService:
+      enabled: true
