@@ -82,6 +82,12 @@ data:
           dynamicPlugins:
             frontend:
               red-hat-developer-hub.backstage-plugin-orchestrator:
+                dynamicRoutes:
+                  - path: /orchestrator
+                    importName: OrchestratorPage
+                    menuItem:
+                      icon: orchestrator
+                      text: Orchestrator
                 mountPoints:
                   - mountPoint: entity.page.workflows/cards
                     importName: OrchestratorPage
