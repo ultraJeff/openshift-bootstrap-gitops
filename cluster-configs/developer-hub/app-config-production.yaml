@@ -127,9 +127,9 @@ data:
           plural: taskruns
     orchestrator:
       dataIndexService:
-        url: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
+        url: http://sonataflow-platform-data-index-service.sonataflow-infra
       sonataflow:
-        baseUrl: http://sonataflow-platform-data-index-service.sonataflow-infra:8080
+        baseUrl: http://sonataflow-platform-data-index-service.sonataflow-infra
     extensions:
       installation:
         enabled: true
