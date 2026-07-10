@@ -86,7 +86,7 @@ data:
                   - path: /orchestrator
                     importName: OrchestratorPage
                     menuItem:
-                      icon: orchestrator
+                      icon: scaffolder
                       text: Orchestrator
                 mountPoints:
                   - mountPoint: entity.page.workflows/cards
