@@ -60,6 +60,10 @@ data:
           target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
           rules:
             - allow: [Template, Group]
+        - type: url
+          target: https://github.com/ultraJeff/rhdh-demo-cluster/blob/main/templates/catalog-info.yaml
+          rules:
+            - allow: [Location, Template]
       providers:
         keycloakOrg:
           default:
