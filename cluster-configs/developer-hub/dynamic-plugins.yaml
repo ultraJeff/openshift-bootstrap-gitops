@@ -114,6 +114,44 @@ data:
         disabled: true
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-scaffolder-backend-module-mta:bs_1.49.4__0.5.1'
         disabled: false
+      # Quay plugin (OCI)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-quay:bs_1.49.4__1.32.1'
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              backstage-community.plugin-quay:
+                mountPoints:
+                  - mountPoint: entity.page.image-registry/cards
+                    importName: QuayPage
+                    config:
+                      layout:
+                        gridColumn: 1 / -1
+                    if:
+                      allOf:
+                        - isKind: component
+                entityTabs:
+                  - path: /image-registry
+                    title: Image Registry
+                    mountPoint: entity.page.image-registry
+      # Ansible plugins (OCI from registry.redhat.io)
+      - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-backstage-rhaap'
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              ansible.plugin-backstage-rhaap:
+                appIcons:
+                  - importName: AnsibleLogo
+                    name: AnsibleLogo
+                dynamicRoutes:
+                  - importName: AnsiblePage
+                    menuItem:
+                      icon: AnsibleLogo
+                      text: Ansible
+                    path: /ansible
+      - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-scaffolder-backend-module-backstage-rhaap'
+        disabled: false
       # Notifications plugins
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications
         disabled: false

@@ -125,6 +125,21 @@ data:
         - group: tekton.dev
           apiVersion: v1
           plural: taskruns
+    quay:
+      uiUrl: https://quay.io
+    ansible:
+      rhaap:
+        baseUrl: ${AAP_BASE_URL}
+        token: ${AAP_TOKEN}
+        checkSSL: false
+    proxy:
+      endpoints:
+        '/quay/api':
+          target: https://quay.io
+          headers:
+            X-Requested-With: XMLHttpRequest
+          changeOrigin: true
+          secure: true
     orchestrator:
       dataIndexService:
         url: http://sonataflow-platform-data-index-service.sonataflow-infra
