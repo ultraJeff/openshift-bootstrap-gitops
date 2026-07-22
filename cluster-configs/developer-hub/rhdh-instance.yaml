@@ -59,6 +59,7 @@ spec:
       # Inject the ARGOCD_URL, ARGOCD_USERNAME,
       # and ARGOCD_PASSWORD into the pod as environment variables
       - name: argocd-secrets
+      - name: aap-credentials
       - name: lightspeed-auth-secrets
         containers:
           - lightspeed-core

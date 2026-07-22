@@ -14,6 +14,7 @@ resources:
 - rhdh-instance.yaml
 - console-link.yaml
 - kubernetes-rbac.yaml
+- aap-credentials-eso.yaml
 
 commonLabels:
   config.openshift.io/component: developer-hub
