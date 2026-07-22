@@ -1,0 +1,47 @@
+---
+# Smee.io webhook relay for Pipelines as Code
+#
+# GitHub webhooks can't reach a private cluster directly.
+# This deployment forwards events from a smee.io channel to
+# the PaC controller service.
+#
+# PREREQUISITES:
+#   1. Create a smee channel at https://smee.io
+#   2. Set the channel URL in the SMEE_URL env var below
+#   3. Configure the GitHub App webhook URL to the same smee URL
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smee-client
+  namespace: openshift-pipelines
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smee-client
+  template:
+    metadata:
+      labels:
+        app: smee-client
+    spec:
+      containers:
+        - name: smee-client
+          image: registry.access.redhat.com/ubi9/nodejs-22:latest
+          command:
+            - /bin/sh
+            - -c
+            - npx smee-client --url $(SMEE_URL) --target http://pipelines-as-code-controller.openshift-pipelines.svc.cluster.local:8080 --path /
+          env:
+            - name: SMEE_URL
+              value: "<REPLACE_WITH_SMEE_CHANNEL_URL>"
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 100m
