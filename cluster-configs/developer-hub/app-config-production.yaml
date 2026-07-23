@@ -131,6 +131,10 @@ data:
           plural: taskruns
     quay:
       uiUrl: https://quay.io
+    scaffolder:
+      defaultEnvironment:
+        secrets:
+          AAP_TOKEN: ${AAP_TOKEN}
     ansible:
       rhaap:
         baseUrl: ${AAP_BASE_URL}
