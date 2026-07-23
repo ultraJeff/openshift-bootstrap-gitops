@@ -40,6 +40,12 @@ data:
             clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
             clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
             disableIdentityResolution: true
+        rhaap:
+          production:
+            host: ${AAP_BASE_URL}
+            checkSSL: false
+            clientId: ${AAP_OAUTH_CLIENT_ID}
+            clientSecret: ${AAP_OAUTH_CLIENT_SECRET}
     backend:
       auth:
         externalAccess:
