@@ -142,6 +142,9 @@ data:
         secrets:
           AAP_TOKEN: ${AAP_TOKEN}
     ansible:
+      creatorService:
+        baseUrl: 127.0.0.1
+        port: '8000'
       rhaap:
         baseUrl: ${AAP_BASE_URL}
         token: ${AAP_TOKEN}
