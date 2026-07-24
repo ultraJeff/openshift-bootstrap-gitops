@@ -130,6 +130,7 @@ data:
                     if:
                       allOf:
                         - isKind: component
+                        - hasAnnotation: quay.io/repository-slug
                 entityTabs:
                   - path: /image-registry
                     title: Image Registry
