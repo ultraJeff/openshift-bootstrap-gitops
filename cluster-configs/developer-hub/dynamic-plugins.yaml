@@ -66,9 +66,9 @@ data:
       # Tekton CI plugin (OCI)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-tekton:bs_1.49.4__3.37.0'
         disabled: false
-      # ArgoCD scaffolder action (OCI)
+      # ArgoCD scaffolder action — community backend includes these, Roadie not needed
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-argocd:bs_1.49.4__1.8.1'
-        disabled: false
+        disabled: true
       # Scaffolder utils (OCI)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:bs_1.49.4__4.1.2'
         disabled: false
