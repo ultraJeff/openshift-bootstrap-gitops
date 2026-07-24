@@ -145,6 +145,8 @@ data:
       creatorService:
         baseUrl: 127.0.0.1
         port: '8000'
+      devSpaces:
+        baseUrl: https://devspaces.apps.tallgeese.ultra.lab
       rhaap:
         baseUrl: ${AAP_BASE_URL}
         token: ${AAP_TOKEN}
