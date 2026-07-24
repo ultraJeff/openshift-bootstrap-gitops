@@ -135,6 +135,10 @@ data:
                   - path: /image-registry
                     title: Image Registry
                     mountPoint: entity.page.image-registry
+                    if:
+                      anyOf:
+                        - hasAnnotation: quay.io/repository-slug
+                        - hasAnnotation: nexus-repository-manager/docker.image-name
       # Nexus Repository Manager plugin (OCI)
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.49.4__1.15.1'
         disabled: false
