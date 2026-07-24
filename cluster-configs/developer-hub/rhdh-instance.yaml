@@ -22,6 +22,18 @@ spec:
         template:
           spec:
             automountServiceAccountToken: true
+            imagePullSecrets:
+              - name: rhdh-registry-pull-secret
+            containers:
+              - name: ansible-devtools-server
+                command:
+                  - adt
+                  - server
+                image: registry.redhat.io/ansible-automation-platform-27/ansible-dev-tools-rhel9:latest
+                imagePullPolicy: IfNotPresent
+                ports:
+                  - containerPort: 8000
+                    protocol: TCP
             initContainers:
               - name: seed-extensions-file
                 image: registry.access.redhat.com/ubi9/ubi-micro:latest

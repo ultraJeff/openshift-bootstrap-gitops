@@ -64,6 +64,10 @@ data:
           target: https://github.com/ultraJeff/rhdh-demo-cluster/blob/main/templates/catalog-info.yaml
           rules:
             - allow: [Location, Template]
+        - type: url
+          target: https://github.com/ansible/ansible-rhdh-templates/blob/main/all.yaml
+          rules:
+            - allow: [Template]
       providers:
         keycloakOrg:
           default:
