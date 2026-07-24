@@ -25,6 +25,7 @@ data:
     p, role:default/plugins, tekton.view.read, read, allow
     p, role:default/plugins, argocd.view.read, read, allow
     p, role:default/plugins, kubernetes.proxy, use, allow
+    p, role:default/plugins, quay.view.read, read, allow
     p, role:default/plugins, lightspeed.chat.read, read, allow
     p, role:default/plugins, lightspeed.chat.create, create, allow
     p, role:default/plugins, orchestrator.workflow.read, read, allow

@@ -159,6 +159,12 @@ data:
             X-Requested-With: XMLHttpRequest
           changeOrigin: true
           secure: true
+        '/nexus-repository-manager':
+          target: http://nexus.ultra.lab
+          headers:
+            X-Requested-With: XMLHttpRequest
+          changeOrigin: true
+          secure: false
     orchestrator:
       dataIndexService:
         url: http://sonataflow-platform-data-index-service.sonataflow-infra
