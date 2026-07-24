@@ -136,7 +136,7 @@ data:
                     title: Image Registry
                     mountPoint: entity.page.image-registry
       # Nexus Repository Manager plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.49.4__1.15.1'
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.49.4__1.23.2'
         disabled: false
         pluginConfig:
           dynamicPlugins:
