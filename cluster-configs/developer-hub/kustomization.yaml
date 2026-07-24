@@ -15,6 +15,11 @@ resources:
 - console-link.yaml
 - kubernetes-rbac.yaml
 - aap-credentials-eso.yaml
+- argocd-credentials-eso.yaml
+- keycloak-credentials-eso.yaml
+- rhdh-backend-credentials-eso.yaml
+- lightspeed-credentials-eso.yaml
+- registry-auth-eso.yaml
 
 commonLabels:
   config.openshift.io/component: developer-hub
