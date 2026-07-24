@@ -6,6 +6,8 @@ metadata:
 
 resources:
   - tekton-operator.yaml
+  - smee-client.yaml
+  - quay-credentials-eso.yaml
 
 commonLabels:
   config.openshift.io/component: tekton

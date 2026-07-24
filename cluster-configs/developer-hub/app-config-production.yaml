@@ -60,6 +60,10 @@ data:
           target: https://raw.githubusercontent.com/ultraJeff/rhdh-software-templates/main/all.yaml
           rules:
             - allow: [Template, Group]
+        - type: url
+          target: https://github.com/ultraJeff/rhdh-demo-cluster/blob/main/templates/catalog-info.yaml
+          rules:
+            - allow: [Location, Template]
       providers:
         keycloakOrg:
           default:
@@ -125,6 +129,30 @@ data:
         - group: tekton.dev
           apiVersion: v1
           plural: taskruns
+    quay:
+      uiUrl: https://quay.io
+    scaffolder:
+      defaultEnvironment:
+        secrets:
+          AAP_TOKEN: ${AAP_TOKEN}
+          aapToken: ${AAP_TOKEN}
+          token: ${AAP_TOKEN}
+    ansible:
+      creatorService:
+        baseUrl: 127.0.0.1
+        port: '8000'
+      rhaap:
+        baseUrl: ${AAP_BASE_URL}
+        token: ${AAP_TOKEN}
+        checkSSL: false
+    proxy:
+      endpoints:
+        '/quay/api':
+          target: https://quay.io
+          headers:
+            X-Requested-With: XMLHttpRequest
+          changeOrigin: true
+          secure: true
     orchestrator:
       dataIndexService:
         url: http://sonataflow-platform-data-index-service.sonataflow-infra
