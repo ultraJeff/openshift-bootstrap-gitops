@@ -125,7 +125,7 @@ data:
             frontend:
               backstage-community.plugin-nexus-repository-manager:
                 mountPoints:
-                  - mountPoint: entity.page.image-registry/cards
+                  - mountPoint: entity.page.build-artifacts/cards
                     importName: NexusRepositoryManagerPage
                     config:
                       layout:
@@ -133,11 +133,11 @@ data:
                     if:
                       allOf:
                         - isKind: component
-                        - hasAnnotation: nexus-repository-manager/docker.image-name
+                        - isNexusRepositoryManagerAvailable
                 entityTabs:
-                  - path: /image-registry
-                    title: Image Registry
-                    mountPoint: entity.page.image-registry
+                  - path: /build-artifacts
+                    title: Build Artifacts
+                    mountPoint: entity.page.build-artifacts
       # Ansible plugins (OCI from registry.redhat.io)
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-backstage-rhaap'
         disabled: false
