@@ -134,6 +134,10 @@ data:
                       allOf:
                         - isKind: component
                         - hasAnnotation: nexus-repository-manager/docker.image-name
+                entityTabs:
+                  - path: /image-registry
+                    title: Image Registry
+                    mountPoint: entity.page.image-registry
       # Ansible plugins (OCI from registry.redhat.io)
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-backstage-rhaap'
         disabled: false
