@@ -118,26 +118,11 @@ data:
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-quay:bs_1.49.4__1.32.1'
         disabled: false
       # Nexus Repository Manager plugin (OCI)
+      # Note: Plugin is enabled but does not self-register a tab in RHDH dynamic plugin mode.
+      # Nexus artifacts are accessible via the Build Artifacts entity route when the
+      # nexus-repository-manager/docker.image-name annotation is present.
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.49.4__1.23.2'
         disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              backstage-community.plugin-nexus-repository-manager:
-                mountPoints:
-                  - mountPoint: entity.page.build-artifacts/cards
-                    importName: NexusRepositoryManagerPage
-                    config:
-                      layout:
-                        gridColumn: 1 / -1
-                    if:
-                      allOf:
-                        - isKind: component
-                        - isNexusRepositoryManagerAvailable
-                entityTabs:
-                  - path: /build-artifacts
-                    title: Build Artifacts
-                    mountPoint: entity.page.build-artifacts
       # Ansible plugins (OCI from registry.redhat.io)
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-backstage-rhaap'
         disabled: false
