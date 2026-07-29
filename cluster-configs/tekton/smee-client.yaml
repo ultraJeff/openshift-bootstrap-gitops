@@ -10,6 +10,10 @@
 #   2. Set the channel URL in the SMEE_URL env var below
 #   3. Configure the GitHub App webhook URL to the same smee URL
 #
+# NOTE: The SMEE_URL is intentionally left as a placeholder.
+# Deploy this manually with the real URL — it should not be
+# committed to git since smee channels are ephemeral.
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
