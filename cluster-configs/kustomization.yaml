@@ -31,6 +31,9 @@ resources:
 # Network Observability (NetObserv)
 - networking/
 
+# External registry trust (ultra.lab CA)
+- registry/
+
 # Cluster maintenance (image/pod pruning)
 - maintenance/
 

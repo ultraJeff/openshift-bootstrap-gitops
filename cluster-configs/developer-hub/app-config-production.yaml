@@ -15,6 +15,13 @@ data:
       title: Red Hat Developer Hub
       baseUrl: ${BACKEND_URL}
     argocd:
+      projectSettings:
+        clusterResourceWhitelist:
+          - group: '*'
+            kind: Namespace
+        destinations:
+          - namespace: '*'
+            server: https://kubernetes.default.svc
       appLocatorMethods:
         - type: config
           instances:

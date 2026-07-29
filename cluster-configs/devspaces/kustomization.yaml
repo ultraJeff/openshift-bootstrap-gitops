@@ -7,6 +7,8 @@ metadata:
 resources:
   - devspaces-operator.yaml
   - devspaces-instance.yaml
+  - github-oauth-external-secret.yaml
+  - git-config.yaml
 
 commonLabels:
   config.openshift.io/component: devspaces

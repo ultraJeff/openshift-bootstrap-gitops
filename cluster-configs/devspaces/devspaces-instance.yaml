@@ -20,4 +20,8 @@ spec:
       template: <username>-devspaces
     storage:
       pvcStrategy: per-user
+  gitServices:
+    github:
+      - endpoint: https://github.com
+        secretName: github-oauth-config
   networking: {}

@@ -98,7 +98,9 @@ oc get pods -n rhdh
 | Application | Source | Secrets Required |
 |-------------|--------|-----------------|
 | `developer-hub` | `cluster-configs/developer-hub` | Yes |
+| `devspaces` | `cluster-configs/devspaces` | Yes (GitHub OAuth via ESO) |
 | `keycloak` | `cluster-configs/keycloak` | Yes |
+| `registry` | `cluster-configs/registry` | No |
 | `security` | `cluster-configs/security` | No |
 | `storage` | `cluster-configs/storage` | No |
 
@@ -139,6 +141,23 @@ oc apply -k cluster-configs/storage/
 ```
 
 See `infrastructure/compact-cluster/README.md` for detailed instructions.
+
+## External Registry Trust
+
+`cluster-configs/registry/` adds the `*.ultra.lab` self-signed wildcard CA cert as an additional trusted CA via `image.config.openshift.io/cluster`. This allows cluster nodes to pull images from `registry.ultra.lab` (Nexus Docker hosted repository on Wing). The `additionalTrustedCA` approach updates the container runtime trust store without triggering a MachineConfig rollout or node reboots.
+
+## Dev Spaces Configuration
+
+`cluster-configs/devspaces/` includes:
+- **CheCluster** with GitHub OAuth via `gitServices` for git push from workspaces
+- **GitHub OAuth secret** synced from Vault via ExternalSecrets (created under `ultraJeffOrg` org — must match the GitHub org where repos are scaffolded, org-level OAuth restrictions apply)
+- **Git config ConfigMap** auto-mounted into workspaces to set `user.name` and `user.email`
+
+## RHDH ArgoCD Plugin Configuration
+
+The `argocd.projectSettings` section in `app-config-production.yaml` configures how the Roadie ArgoCD scaffolder plugin creates AppProjects:
+- `clusterResourceWhitelist` allows Namespace creation (required because the gitops repos include Namespace manifests and the plugin doesn't expose `CreateNamespace` as a parameter)
+- `destinations` allows deployment to any namespace (the plugin defaults to restricting to a single namespace)
 
 ## Related Documentation
 
