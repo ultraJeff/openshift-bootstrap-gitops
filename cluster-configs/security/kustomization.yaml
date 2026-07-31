@@ -8,6 +8,10 @@ resources:
 - admin-rbac.yaml
 - htpasswd-oauth.yaml
 - htpasswd-secret.yaml
+- ultra-lab-ca.yaml
+- proxy-trusted-ca.yaml
+- keycloak-oidc-eso.yaml
+- keycloak-rbac.yaml
 
 commonLabels:
   config.openshift.io/component: security

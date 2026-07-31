@@ -89,19 +89,26 @@ spec:
   rbac:
     defaultPolicy: ""
     policy: |
-      # OpenShift groups -> ArgoCD admin
+      g, openshift-admins, role:admin
       g, system:cluster-admins, role:admin
       g, cluster-admins, role:admin
-      # OpenShift htpasswd 'admin' user -> ArgoCD admin
       g, admin, role:admin
-      # Service accounts
       g, developer-hub, role:admin
-    # Include both groups and preferred_username (for individual user matching)
     scopes: '[groups, preferred_username]'
   extraConfig:
     accounts.admin: 'apiKey, login'
     accounts.developer-hub: 'apiKey, login'
     accounts.developer-hub.password: '$2y$10$e7xeIzQlbcJXHOgYVKQ7W.ghGLAZgHNUrzIC7oqdHsS2Sx7A9vsju' # notsecret - bcrypt hash
+    oidc.config: |
+      name: Keycloak
+      issuer: https://sso.ultra.lab/realms/openshift
+      clientID: argocd
+      enablePKCEAuthentication: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+        - groups
   redis:
     resources:
       limits:
@@ -146,15 +153,6 @@ spec:
     service:
       type: ""
   sso:
-    dex:
-      openShiftOAuth: true
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 250m
-          memory: 128Mi
-    provider: dex
+    provider: ""
   tls:
     ca: {}
