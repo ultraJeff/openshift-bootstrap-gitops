@@ -8,13 +8,14 @@ resources:
   # Platform infrastructure (in-repo)
   - storage.yaml
   - security.yaml
+  - registry.yaml
   - node-configs.yaml
+  - maintenance.yaml
   - tekton.yaml
   - devspaces.yaml
   - serverless.yaml
 
   # Applications with manual secret prerequisites (in-repo)
-  - keycloak.yaml
   - developer-hub.yaml
 
   # External repos

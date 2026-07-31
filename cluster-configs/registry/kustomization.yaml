@@ -5,5 +5,4 @@ metadata:
   name: registry-configs
 
 resources:
-  - ultra-lab-ca-configmap.yaml
   - image-config.yaml

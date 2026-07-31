@@ -7,7 +7,6 @@ metadata:
 resources:
 - admin-rbac.yaml
 - htpasswd-oauth.yaml
-- htpasswd-secret.yaml
 - ultra-lab-ca.yaml
 - proxy-trusted-ca.yaml
 - keycloak-oidc-eso.yaml
