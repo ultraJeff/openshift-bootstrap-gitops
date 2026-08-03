@@ -11,6 +11,7 @@ resources:
   - registry.yaml
   - node-configs.yaml
   - maintenance.yaml
+  - metallb.yaml
   - tekton.yaml
   - devspaces.yaml
   - serverless.yaml
