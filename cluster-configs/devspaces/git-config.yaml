@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: workspaces-config
   annotations:
     controller.devfile.io/mount-as: subpath
-    controller.devfile.io/mount-path: /etc/gitconfig
+    controller.devfile.io/mount-path: /etc
 data:
   gitconfig: |
     [user]

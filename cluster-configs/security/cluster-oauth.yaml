@@ -13,7 +13,7 @@ spec:
           name: htpasswd-secret
     - name: keycloak
       type: OpenID
-      mappingMethod: claim
+      mappingMethod: add
       openID:
         clientID: openshift
         clientSecret:
