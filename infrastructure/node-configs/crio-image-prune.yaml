@@ -22,7 +22,7 @@ spec:
             [Service]
             Type=oneshot
             ExecStart=/usr/bin/crictl rmi --prune
-            TimeoutStartSec=300
+            TimeoutStartSec=600
         - name: crio-image-prune.timer
           enabled: true
           contents: |
@@ -60,7 +60,7 @@ spec:
             [Service]
             Type=oneshot
             ExecStart=/usr/bin/crictl rmi --prune
-            TimeoutStartSec=300
+            TimeoutStartSec=600
         - name: crio-image-prune.timer
           enabled: true
           contents: |

@@ -48,6 +48,14 @@ echo ""
 # -----------------------------------------------
 info "Restoring operators..."
 
+info "  Operators in openshift-operators..."
+for deploy in $(oc get deployments -n openshift-operators -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get deployment "$deploy" -n openshift-operators -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale deployment "$deploy" -n openshift-operators --replicas=1 2>/dev/null || true
+    fi
+done
+
 info "  RHOAI operator..."
 oc scale deployment rhods-operator -n redhat-ods-operator --replicas=3 2>/dev/null || true
 
@@ -55,44 +63,84 @@ info "  External Secrets operator..."
 oc scale deployment -n external-secrets-operator --all --replicas=1 2>/dev/null || true
 
 info "  RHDH operator..."
-# Find the operator deployment and scale it back
 for deploy in $(oc get deployments -n rhdh-operator -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
     oc scale deployment "$deploy" -n rhdh-operator --replicas=1 2>/dev/null || true
 done
 
-info "  Keycloak operator..."
-oc scale deployment rhbk-operator -n keycloak --replicas=1 2>/dev/null || true
-
-info "  Observability operators..."
+info "  Cluster observability operator..."
 oc scale deployment -n openshift-cluster-observability-operator --all --replicas=1 2>/dev/null || true
-for ns in openshift-operators openshift-operators-redhat; do
-    for deploy in $(oc get deployments -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
-        oc scale deployment "$deploy" -n "$ns" --replicas=1 2>/dev/null || true
-    done
-done
-oc scale deployment cluster-logging-operator -n openshift-logging --replicas=1 2>/dev/null || true
 
 info "Waiting 30s for operators to reconcile..."
 sleep 30
 
 # -----------------------------------------------
-# 2. Restore infrastructure workloads
+# 2. Restore observability stack
 # -----------------------------------------------
-info "Restoring Keycloak..."
-oc scale statefulset postgresql-db -n keycloak --replicas=1 2>/dev/null || true
-sleep 10
-oc scale statefulset keycloak -n keycloak --replicas=1 2>/dev/null || true
-
 info "Restoring MinIO..."
 oc scale deployment minio -n minio --replicas=1 2>/dev/null || true
+sleep 5
 
+info "Restoring observability namespace..."
+for deploy in $(oc get deployments -n observability -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get deployment "$deploy" -n observability -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale deployment "$deploy" -n observability --replicas=1 2>/dev/null || true
+    fi
+done
+for sts in $(oc get statefulsets -n observability -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get statefulset "$sts" -n observability -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale statefulset "$sts" -n observability --replicas=1 2>/dev/null || true
+    fi
+done
+
+info "Restoring tracing-system namespace..."
+for deploy in $(oc get deployments -n tracing-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get deployment "$deploy" -n tracing-system -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale deployment "$deploy" -n tracing-system --replicas=1 2>/dev/null || true
+    fi
+done
+for sts in $(oc get statefulsets -n tracing-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get statefulset "$sts" -n tracing-system -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale statefulset "$sts" -n tracing-system --replicas=1 2>/dev/null || true
+    fi
+done
+
+info "Restoring OpenTelemetry collector..."
+oc scale deployment -n opentelemetrycollector --all --replicas=1 2>/dev/null || true
+
+info "Restoring COO service mesh monitoring..."
+for sts in $(oc get statefulsets -n coo-service-mesh -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get statefulset "$sts" -n coo-service-mesh -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale statefulset "$sts" -n coo-service-mesh --replicas=1 2>/dev/null || true
+    fi
+done
+
+# -----------------------------------------------
+# 3. Restore service mesh
+# -----------------------------------------------
+info "Restoring service mesh..."
+for deploy in $(oc get deployments -n istio-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    CURRENT=$(oc get deployment "$deploy" -n istio-system -o jsonpath='{.spec.replicas}' 2>/dev/null)
+    if [[ "$CURRENT" == "0" ]]; then
+        oc scale deployment "$deploy" -n istio-system --replicas=1 2>/dev/null || true
+    fi
+done
+oc scale deployment -n istio-ingress --all --replicas=1 2>/dev/null || true
+
+# -----------------------------------------------
+# 4. Restore infrastructure workloads
+# -----------------------------------------------
 info "Restoring Developer Hub..."
 oc scale statefulset backstage-psql-developer-hub -n rhdh --replicas=1 2>/dev/null || true
 sleep 10
 oc scale deployment backstage-developer-hub -n rhdh --replicas=1 2>/dev/null || true
 
 # -----------------------------------------------
-# 3. Restore RHOAI components and demo applications
+# 5. Restore RHOAI components and workloads
 # -----------------------------------------------
 info "Restoring RHOAI components..."
 for deploy in $(oc get deployments -n redhat-ods-applications -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
@@ -102,9 +150,12 @@ for deploy in $(oc get deployments -n redhat-ods-applications -o jsonpath='{.ite
     fi
 done
 
-info "Restoring demo applications..."
-DEMO_NAMESPACES="hotrod-demo quarkus-otel-demo super-slim-demo"
-for ns in ${DEMO_NAMESPACES}; do
+# -----------------------------------------------
+# 6. Restore demo and workload namespaces
+# -----------------------------------------------
+info "Restoring workload namespaces..."
+WORKLOAD_NAMESPACES="ossm-ai-models ossm-bookinfo ossm-restapi ossm-httpbin ossm-mesh-demo ossm-enrollment-test sonataflow-infra quarkus-grpc"
+for ns in ${WORKLOAD_NAMESPACES}; do
     for deploy in $(oc get deployments -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
         CURRENT=$(oc get deployment "$deploy" -n "$ns" -o jsonpath='{.spec.replicas}' 2>/dev/null)
         if [[ "$CURRENT" == "0" ]]; then
@@ -122,7 +173,7 @@ for ns in ${DEMO_NAMESPACES}; do
 done
 
 # -----------------------------------------------
-# 4. Sync ArgoCD Applications (renumbered)
+# 7. Sync ArgoCD Applications
 # -----------------------------------------------
 info "Syncing ArgoCD Applications..."
 echo ""
@@ -130,21 +181,20 @@ echo ""
 APPS=$(oc get applications -n openshift-gitops -o jsonpath='{.items[*].metadata.name}' 2>/dev/null)
 for app in ${APPS}; do
     info "  Syncing: $app"
-    # Use oc to trigger a sync via annotation (works without argocd CLI)
     oc annotate application "$app" -n openshift-gitops \
         argocd.argoproj.io/refresh=normal --overwrite 2>/dev/null || true
 done
 
 echo ""
 warn "ArgoCD Applications have been refreshed."
-warn "Resources deleted during teardown (InferenceServices, LokiStack)"
+warn "Resources deleted during teardown (InferenceServices, etc.)"
 warn "will be recreated on the next ArgoCD sync."
 echo ""
 info "To fully sync an app:  oc patch application <name> -n openshift-gitops --type merge -p '{\"operation\":{\"initiatedBy\":{\"username\":\"admin\"},\"sync\":{}}}'"
 echo ""
 
 # -----------------------------------------------
-# 5. Post-restore checks
+# 8. Post-restore checks
 # -----------------------------------------------
 info "Waiting 30s for workloads to start..."
 sleep 30
@@ -189,6 +239,5 @@ info "============================================"
 info "  Restore complete"
 info "============================================"
 info ""
-info "Note: RHOAI dashboard was previously scaled to 1 replica."
-info "The operator should reconcile component deployments."
+info "Keycloak runs externally on Wing (sso.ultra.lab) — no restore needed."
 info "InferenceServices will need an ArgoCD sync or manual re-apply."

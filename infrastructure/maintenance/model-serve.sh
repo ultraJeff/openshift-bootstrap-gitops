@@ -2,7 +2,7 @@
 #
 # Model Serving Toggle — Start/Stop KServe InferenceServices
 #
-# Uses a modelcar (OCI image) stored in the internal registry,
+# Uses a modelcar (OCI image) stored in Nexus (registry.ultra.lab),
 # so the model is cached locally on nodes and doesn't need to
 # be re-downloaded from HuggingFace on each start.
 #
@@ -23,9 +23,9 @@ info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
-NAMESPACE="super-slim-demo"
+NAMESPACE="ossm-ai-models"
 ISVC_NAME="phi-4-mini"
-MODELCAR_IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/phi-4-mini-modelcar:latest"
+MODELCAR_IMAGE="registry.ultra.lab/ai-models/phi-4-mini-modelcar:latest"
 
 usage() {
     echo "Usage: $0 {start|stop|status}"
@@ -53,8 +53,12 @@ metadata:
   namespace: ${NAMESPACE}
   annotations:
     serving.kserve.io/deploymentMode: RawDeployment
+  labels:
+    networking.kserve.io/visibility: exposed
 spec:
   predictor:
+    nodeSelector:
+      kubernetes.io/hostname: tallgeese
     model:
       runtime: vllm-cpu-runtime
       modelFormat:
@@ -63,10 +67,10 @@ spec:
       resources:
         requests:
           cpu: "4"
-          memory: 12Gi
+          memory: 16Gi
         limits:
           cpu: "8"
-          memory: 16Gi
+          memory: 24Gi
 EOF
 
     info "InferenceService created. Model is loading from local cache (no download)."

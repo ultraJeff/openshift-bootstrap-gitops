@@ -84,43 +84,63 @@ for deploy in $(oc get deployments -n redhat-ods-applications -o jsonpath='{.ite
 done
 
 # -----------------------------------------------
-# 4. Remove observability workloads (Loki PDBs block drains)
+# 4. Scale down observability stack
 # -----------------------------------------------
 info "Scaling down observability stack..."
 
-# Delete LokiStack (removes single-replica PDBs that block node drains)
-oc delete lokistack logging-loki -n openshift-logging --wait=false 2>/dev/null || true
-
-# Scale down logging operator so it doesn't recreate resources
-oc scale deployment cluster-logging-operator -n openshift-logging --replicas=0 2>/dev/null || true
-
-# Scale down Tempo
-for sts in $(oc get statefulsets -n observability -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
-    oc scale statefulset "$sts" -n observability --replicas=0 2>/dev/null || true
-done
+# Tempo in observability namespace
 for deploy in $(oc get deployments -n observability -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
     oc scale deployment "$deploy" -n observability --replicas=0 2>/dev/null || true
 done
+for sts in $(oc get statefulsets -n observability -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale statefulset "$sts" -n observability --replicas=0 2>/dev/null || true
+done
 
-# Scale down MinIO
+# Tempo in tracing-system namespace
+for deploy in $(oc get deployments -n tracing-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale deployment "$deploy" -n tracing-system --replicas=0 2>/dev/null || true
+done
+for sts in $(oc get statefulsets -n tracing-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale statefulset "$sts" -n tracing-system --replicas=0 2>/dev/null || true
+done
+
+# OpenTelemetry collector
+oc scale deployment -n opentelemetrycollector --all --replicas=0 2>/dev/null || true
+
+# COO service mesh monitoring
+for sts in $(oc get statefulsets -n coo-service-mesh -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale statefulset "$sts" -n coo-service-mesh --replicas=0 2>/dev/null || true
+done
+
+# MinIO (S3 backend for Tempo/Loki)
 oc scale deployment minio -n minio --replicas=0 2>/dev/null || true
 
-# Scale down cluster observability operator
+# Cluster observability operator
 oc scale deployment -n openshift-cluster-observability-operator --all --replicas=0 2>/dev/null || true
 
-# Scale down loki/tempo/otel operators
-for ns in openshift-operators openshift-operators-redhat; do
-    for deploy in $(oc get deployments -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
-        oc scale deployment "$deploy" -n "$ns" --replicas=0 2>/dev/null || true
-    done
+# -----------------------------------------------
+# 5. Scale down service mesh components
+# -----------------------------------------------
+info "Scaling down service mesh..."
+for deploy in $(oc get deployments -n istio-system -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale deployment "$deploy" -n istio-system --replicas=0 2>/dev/null || true
+done
+oc scale deployment -n istio-ingress --all --replicas=0 2>/dev/null || true
+
+# -----------------------------------------------
+# 6. Scale down operators in openshift-operators
+# -----------------------------------------------
+info "Scaling down operators..."
+for deploy in $(oc get deployments -n openshift-operators -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+    oc scale deployment "$deploy" -n openshift-operators --replicas=0 2>/dev/null || true
 done
 
 # -----------------------------------------------
-# 5. Scale down demo applications
+# 7. Scale down demo and workload namespaces
 # -----------------------------------------------
-info "Scaling down demo applications..."
-DEMO_NAMESPACES="hotrod-demo quarkus-otel-demo super-slim-demo"
-for ns in ${DEMO_NAMESPACES}; do
+info "Scaling down demo and workload namespaces..."
+WORKLOAD_NAMESPACES="ossm-ai-models ossm-bookinfo ossm-restapi ossm-httpbin ossm-mesh-demo ossm-enrollment-test sonataflow-infra quarkus-grpc"
+for ns in ${WORKLOAD_NAMESPACES}; do
     for deploy in $(oc get deployments -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
         oc scale deployment "$deploy" -n "$ns" --replicas=0 2>/dev/null || true
     done
@@ -130,26 +150,21 @@ for ns in ${DEMO_NAMESPACES}; do
 done
 
 # -----------------------------------------------
-# 6. Scale down RHDH and Keycloak
+# 8. Scale down RHDH
 # -----------------------------------------------
 info "Scaling down Developer Hub..."
 oc scale deployment backstage-developer-hub -n rhdh --replicas=0 2>/dev/null || true
 oc scale statefulset backstage-psql-developer-hub -n rhdh --replicas=0 2>/dev/null || true
 oc scale deployment -n rhdh-operator --all --replicas=0 2>/dev/null || true
 
-info "Scaling down Keycloak..."
-oc scale statefulset keycloak -n keycloak --replicas=0 2>/dev/null || true
-oc scale statefulset postgresql-db -n keycloak --replicas=0 2>/dev/null || true
-oc scale deployment rhbk-operator -n keycloak --replicas=0 2>/dev/null || true
-
 # -----------------------------------------------
-# 7. Scale down External Secrets operator
+# 9. Scale down External Secrets operator
 # -----------------------------------------------
 info "Scaling down External Secrets operator..."
 oc scale deployment -n external-secrets-operator --all --replicas=0 2>/dev/null || true
 
 # -----------------------------------------------
-# 8. Clean up any remaining PDBs that block drains
+# 10. Clean up any remaining PDBs that block drains
 # -----------------------------------------------
 info "Checking for remaining PDBs with zero disruptions allowed..."
 oc get pdb --all-namespaces -o json 2>/dev/null | python3 -c "
@@ -176,6 +191,8 @@ info "  - OpenShift GitOps (ArgoCD)"
 info "  - ArgoCD Applications (preserved for restore)"
 info "  - LVM Storage operator"
 info "  - Core platform operators"
+info ""
+info "Keycloak runs externally on Wing (sso.ultra.lab) — not affected."
 info ""
 info "You can now safely:"
 info "  - Apply MachineConfig changes (node reboots)"
