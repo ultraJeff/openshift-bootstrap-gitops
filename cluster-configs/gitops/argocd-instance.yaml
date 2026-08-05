@@ -128,11 +128,29 @@ spec:
   resourceExclusions: |
     - apiGroups:
       - tekton.dev
+      - triggers.tekton.dev
+      - resolution.tekton.dev
+      - pipelinesascode.tekton.dev
+      - operator.tekton.dev
       clusters:
       - '*'
       kinds:
-      - TaskRun
-      - PipelineRun
+      - '*'
+    - apiGroups:
+      - components.platform.opendatahub.io
+      - services.platform.opendatahub.io
+      - serving.kserve.io
+      - generators.external-secrets.io
+      - policies.kyverno.io
+      - kyverno.io
+      - kafka.strimzi.io
+      - k8s.ovn.org
+      - metal3.io
+      - perses.dev
+      clusters:
+      - '*'
+      kinds:
+      - '*'
   server:
     autoscale:
       enabled: false
