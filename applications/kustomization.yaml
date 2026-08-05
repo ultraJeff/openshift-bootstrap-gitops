@@ -21,6 +21,7 @@ resources:
   - developer-hub.yaml
 
   # External repos
+  - service-mesh-with-rhoai.yaml
   - observability.yaml
   - network-observability.yaml
   - external-secrets.yaml
