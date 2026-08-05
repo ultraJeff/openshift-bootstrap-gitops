@@ -1,0 +1,11 @@
+---
+apiVersion: operator.openshift.io/v1
+kind: KubeDescheduler
+metadata:
+  name: cluster
+  namespace: openshift-kube-descheduler-operator
+spec:
+  deschedulingIntervalSeconds: 120
+  profiles:
+    - LifecycleAndUtilization
+  managementState: Managed

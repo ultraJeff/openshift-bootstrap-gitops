@@ -10,6 +10,7 @@ resources:
   - security.yaml
   - registry.yaml
   - node-configs.yaml
+  - descheduler.yaml
   - maintenance.yaml
   - metallb.yaml
   - tekton.yaml
