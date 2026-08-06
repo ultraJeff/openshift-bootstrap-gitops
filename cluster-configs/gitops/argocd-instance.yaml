@@ -130,6 +130,16 @@ spec:
     accounts.admin: 'apiKey, login'
     accounts.developer-hub: 'apiKey, login'
     accounts.developer-hub.password: '$2y$10$e7xeIzQlbcJXHOgYVKQ7W.ghGLAZgHNUrzIC7oqdHsS2Sx7A9vsju' # notsecret - bcrypt hash
+    resource.customizations.ignoreDifferences.external-secrets.io_ExternalSecret: |
+      jqPathExpressions:
+        - .spec.dataFrom[]?.extract.conversionStrategy
+        - .spec.dataFrom[]?.extract.decodingStrategy
+        - .spec.dataFrom[]?.extract.metadataPolicy
+        - .spec.dataFrom[]?.extract.nullBytePolicy
+        - .spec.data[]?.remoteRef.conversionStrategy
+        - .spec.data[]?.remoteRef.decodingStrategy
+        - .spec.data[]?.remoteRef.metadataPolicy
+        - .spec.data[]?.remoteRef.nullBytePolicy
   redis:
     resources:
       limits:
