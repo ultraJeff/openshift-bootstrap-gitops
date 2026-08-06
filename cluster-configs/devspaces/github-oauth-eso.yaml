@@ -1,0 +1,36 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: github-oauth-config
+  namespace: openshift-devspaces
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app.kubernetes.io/part-of: che.eclipse.org
+    app.kubernetes.io/component: oauth-scm-configuration
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: vault-secret-store
+  target:
+    name: github-oauth-config
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/part-of: che.eclipse.org
+          app.kubernetes.io/component: oauth-scm-configuration
+        annotations:
+          che.eclipse.org/oauth-scm-server: github
+      data:
+        id: "{{ .id }}"
+        secret: "{{ .secret }}"
+  data:
+    - secretKey: id
+      remoteRef:
+        key: devspaces/github-oauth-org
+        property: id
+    - secretKey: secret
+      remoteRef:
+        key: devspaces/github-oauth-org
+        property: secret
