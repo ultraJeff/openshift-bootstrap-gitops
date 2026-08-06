@@ -6,6 +6,7 @@ metadata:
 
 resources:
   - tekton-operator.yaml
+  - smee-credentials-eso.yaml
   - smee-client.yaml
   - quay-credentials-eso.yaml
 
