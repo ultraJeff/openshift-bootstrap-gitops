@@ -11,6 +11,9 @@
 
 set -euo pipefail
 
+SKIP_CONFIRM=false
+[[ "${1:-}" == "-y" ]] && SKIP_CONFIRM=true
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -43,10 +46,12 @@ warn "  - openshift-logging namespace"
 warn ""
 warn "Stored logs will be lost (data remains in MinIO bucket)."
 echo ""
-read -p "Continue? (yes/no): " CONFIRM
-if [[ "${CONFIRM}" != "yes" ]]; then
-    echo "Aborted."
-    exit 0
+if [[ "$SKIP_CONFIRM" != "true" ]]; then
+    read -p "Continue? (yes/no): " CONFIRM
+    if [[ "${CONFIRM}" != "yes" ]]; then
+        echo "Aborted."
+        exit 0
+    fi
 fi
 
 echo ""

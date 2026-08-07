@@ -15,6 +15,9 @@
 
 set -euo pipefail
 
+SKIP_CONFIRM=false
+[[ "${1:-}" == "-y" ]] && SKIP_CONFIRM=true
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -43,10 +46,12 @@ echo ""
 warn "This will scale down all workloads and demo apps."
 warn "GitOps and ArgoCD Applications will be preserved for restore."
 echo ""
-read -p "Continue? (yes/no): " CONFIRM
-if [[ "${CONFIRM}" != "yes" ]]; then
-    echo "Aborted."
-    exit 0
+if [[ "$SKIP_CONFIRM" != "true" ]]; then
+    read -p "Continue? (yes/no): " CONFIRM
+    if [[ "${CONFIRM}" != "yes" ]]; then
+        echo "Aborted."
+        exit 0
+    fi
 fi
 
 echo ""
