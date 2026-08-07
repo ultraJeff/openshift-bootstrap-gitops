@@ -8,7 +8,7 @@ spec:
   storage:
     deviceClasses:
     - name: lvmstorage
-      # This matches the partition label created during installation
+      default: true
       deviceSelector:
         paths:
         - /dev/disk/by-partlabel/lvmstorage
@@ -19,19 +19,3 @@ spec:
       # Note: nodeSelector can't be changed after LVMCluster creation
       # To add new nodes, label them with: storage.openshift.io/lvmstorage=true
       # and ensure they have the /dev/disk/by-partlabel/lvmstorage partition
----
-# Optional: Create a default storage class
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: lvms-lvmstorage
-  annotations:
-    # Uncomment to make this the default storage class
-    storageclass.kubernetes.io/is-default-class: "true"
-parameters:
-  csi.storage.k8s.io/fstype: xfs
-  topolvm.io/device-class: lvmstorage
-provisioner: topolvm.io
-reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: true
