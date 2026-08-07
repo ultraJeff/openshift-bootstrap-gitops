@@ -93,7 +93,7 @@ metadata:
   name: loki-operator
   namespace: openshift-operators-redhat
 spec:
-  channel: stable-6.4
+  channel: stable-6.6
   installPlanApproval: Automatic
   name: loki-operator
   source: redhat-operators
@@ -108,7 +108,7 @@ metadata:
   name: cluster-logging
   namespace: openshift-logging
 spec:
-  channel: stable-6.4
+  channel: stable-6.6
   installPlanApproval: Automatic
   name: cluster-logging
   source: redhat-operators
