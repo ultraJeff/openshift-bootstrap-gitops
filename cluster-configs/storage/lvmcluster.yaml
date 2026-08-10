@@ -9,6 +9,7 @@ spec:
     deviceClasses:
     - name: lvmstorage
       default: true
+      fstype: xfs
       deviceSelector:
         paths:
         - /dev/disk/by-partlabel/lvmstorage
@@ -16,6 +17,23 @@ spec:
         name: thin-pool
         sizePercent: 90
         overprovisionRatio: 10
+        chunkSizeCalculationPolicy: Static
+        metadataSizeCalculationPolicy: Host
       # Note: nodeSelector can't be changed after LVMCluster creation
       # To add new nodes, label them with: storage.openshift.io/lvmstorage=true
       # and ensure they have the /dev/disk/by-partlabel/lvmstorage partition
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: lvms-lvmstorage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+    description: Provides RWO and RWOP Filesystem & Block volumes
+parameters:
+  csi.storage.k8s.io/fstype: xfs
+  topolvm.io/device-class: lvmstorage
+provisioner: topolvm.io
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

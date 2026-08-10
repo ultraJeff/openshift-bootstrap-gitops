@@ -140,6 +140,14 @@ spec:
         - .spec.data[]?.remoteRef.decodingStrategy
         - .spec.data[]?.remoteRef.metadataPolicy
         - .spec.data[]?.remoteRef.nullBytePolicy
+    resource.customizations.ignoreDifferences.storage.k8s.io_StorageClass: |
+      jqPathExpressions:
+        - .metadata.annotations["opendatahub.io/sc-config"]
+        - .metadata.labels["owned-by.topolvm.io/group"]
+        - .metadata.labels["owned-by.topolvm.io/kind"]
+        - .metadata.labels["owned-by.topolvm.io/name"]
+        - .metadata.labels["owned-by.topolvm.io/namespace"]
+        - .metadata.labels["owned-by.topolvm.io/version"]
   redis:
     resources:
       limits:
