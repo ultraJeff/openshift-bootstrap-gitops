@@ -28,9 +28,6 @@ resources:
 # Keycloak (Red Hat build of Keycloak)
 - keycloak/
 
-# Network Observability (NetObserv)
-- networking/
-
 # External registry trust (ultra.lab CA)
 - registry/
 
