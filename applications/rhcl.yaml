@@ -1,0 +1,32 @@
+---
+# ArgoCD Application for Red Hat Connectivity Link (RHCL)
+#
+# Installs the RHCL operator and its dependency operators (Authorino,
+# DNS, Limitador) into their own namespace with Manual approval.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhcl
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/rhcl
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

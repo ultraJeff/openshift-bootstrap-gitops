@@ -16,6 +16,7 @@ resources:
   - tekton.yaml
   - devspaces.yaml
   - serverless.yaml
+  - rhcl.yaml
 
   # Applications with manual secret prerequisites (in-repo)
   - developer-hub.yaml

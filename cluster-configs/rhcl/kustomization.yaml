@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: rhcl-configs
+
+resources:
+- rhcl-operator.yaml
+
+commonLabels:
+  config.openshift.io/component: rhcl
+  config.openshift.io/managed-by: gitops
