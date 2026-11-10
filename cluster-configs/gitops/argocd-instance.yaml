@@ -48,10 +48,10 @@ spec:
     resources:
       limits:
         cpu: "2"
-        memory: 2Gi
+        memory: 3Gi
       requests:
         cpu: 250m
-        memory: 1Gi
+        memory: 1536Mi
     sharding: {}
   grafana:
     enabled: false
