@@ -22,7 +22,6 @@ resources:
   - developer-hub.yaml
 
   # External repos
-  - ai-models-gateway-certs.yaml
   - ai-models-gateway.yaml
   - observability.yaml
   - network-observability.yaml

@@ -6,7 +6,8 @@
 # read istio-system/mesh-gateway-tls, the HTTPRoutes for iris-onnx and
 # phi4-mesh, and the passthrough OpenShift Routes.
 #
-# Depends on ai-models-gateway-certs for the TLS secret.
+# Also owns the gateway TLS Certificate. The issuing mesh CA comes from the
+# service-mesh app (ossm-3-demo deploy/base/mesh/mesh-ca.yaml).
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
