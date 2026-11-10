@@ -22,7 +22,8 @@ resources:
   - developer-hub.yaml
 
   # External repos
-  - service-mesh-with-rhoai.yaml
+  - ai-models-gateway-certs.yaml
+  - ai-models-gateway.yaml
   - observability.yaml
   - network-observability.yaml
   - external-secrets.yaml

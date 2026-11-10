@@ -1,0 +1,35 @@
+---
+# ArgoCD Application for the AI models north-south gateway
+#
+# Deploys resources/rhoai/gateway from ossm-3-demo: the
+# istio-ingress/ai-models-gateway Gateway, the ReferenceGrant that lets it
+# read istio-system/mesh-gateway-tls, the HTTPRoutes for iris-onnx and
+# phi4-mesh, and the passthrough OpenShift Routes.
+#
+# Depends on ai-models-gateway-certs for the TLS secret.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-models-gateway
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/ossm-3-demo.git
+    targetRevision: main
+    path: resources/rhoai/gateway
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

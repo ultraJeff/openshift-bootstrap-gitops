@@ -1,0 +1,39 @@
+---
+# ArgoCD Application for the mesh CA chain and AI models gateway certificate
+#
+# Deploys manifests/certs from service-mesh-with-rhoai: the self-signed
+# ClusterIssuer, root and intermediate CA Certificates and Issuers, and
+# the mesh-gateway-cert Certificate (secret istio-system/mesh-gateway-tls).
+#
+# The intermediate CA is also Istio's mesh CA (copied into
+# istio-system/cacerts by scripts/create-istio-cacerts.sh), so a change
+# to the CA Certificates reissues the mesh CA. Review diffs before syncing.
+#
+# Only manifests/certs is synced. The rest of that repo's manifests/
+# overlaps with the service-mesh app.
+#
+# No resources-finalizer: deleting this Application should not cascade
+# into deleting the CA.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-models-gateway-certs
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/service-mesh-with-rhoai.git
+    targetRevision: main
+    path: manifests/certs
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
