@@ -102,3 +102,7 @@ nodes-config.yaml
 # Use the .example files as templates
 infrastructure/compact-cluster/install-config.yaml
 infrastructure/compact-cluster/agent-config.yaml
+
+# Session notes: demo scripts, customer emails, and docs from working
+# sessions. Kept local for now.
+session-notes/

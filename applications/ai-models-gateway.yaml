@@ -4,7 +4,8 @@
 # Deploys resources/rhoai/gateway from ossm-3-demo: the
 # istio-ingress/ai-models-gateway Gateway, the ReferenceGrant that lets it
 # read istio-system/mesh-gateway-tls, the HTTPRoutes for iris-onnx and
-# phi4-mesh, and the passthrough OpenShift Routes.
+# phi4-mesh, the passthrough OpenShift Routes, and the RHCL AuthPolicy,
+# RateLimitPolicy, and Authorino TLS EnvoyFilter for iris-onnx.
 #
 # Also owns the gateway TLS Certificate. The issuing mesh CA comes from the
 # service-mesh app (ossm-3-demo deploy/base/mesh/mesh-ca.yaml).
