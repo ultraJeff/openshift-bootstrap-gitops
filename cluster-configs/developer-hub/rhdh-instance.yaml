@@ -94,5 +94,6 @@ spec:
   monitoring:
     enabled: true
   flavours:
-    - name: lightspeed
+    # RHDH 2.1 renamed the lightspeed flavour to intelligent-assistant
+    - name: intelligent-assistant
       enabled: true
