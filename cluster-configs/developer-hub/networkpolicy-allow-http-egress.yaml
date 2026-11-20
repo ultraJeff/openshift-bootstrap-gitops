@@ -1,0 +1,25 @@
+# The RHDH 2.1 Operator deploys default-deny NetworkPolicies that only allow
+# DNS, 443/6443, PostgreSQL and Redis egress. Allow plain-HTTP egress for the
+# SonataFlow data index (sonataflow-infra:80) and the Nexus proxy (nexus.ultra.lab:80).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: developer-hub-allow-http-egress
+  namespace: rhdh
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  podSelector:
+    matchExpressions:
+      - key: rhdh.redhat.com/app
+        operator: In
+        values:
+          - backstage-developer-hub
+  policyTypes:
+    - Egress
+  egress:
+    - ports:
+        - port: 80
+          protocol: TCP
+        - port: 8080
+          protocol: TCP

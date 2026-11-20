@@ -122,8 +122,10 @@ data:
                 scaffolderFieldExtensions:
                   - importName: AAPTokenFieldExtension
                   - importName: AAPResourcePickerExtension
+      # Disabled: 2.2 build (Backstage 1.49.4) aborts RHDH 2.1 backend startup
+      # ("Invalid backend feature at module rhaap ... catalogProcessing").
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-backstage-plugin-catalog-backend-module-rhaap'
-        disabled: false
+        disabled: true
         pluginConfig: {}
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-backstage-plugin-auth-backend-module-rhaap-provider'
         disabled: true

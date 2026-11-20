@@ -12,6 +12,7 @@ resources:
 - app-config-production.yaml
 - rbac-policies.yaml
 - rhdh-instance.yaml
+- networkpolicy-allow-http-egress.yaml
 - console-link.yaml
 - kubernetes-rbac.yaml
 - aap-credentials-eso.yaml
