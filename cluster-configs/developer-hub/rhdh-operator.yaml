@@ -28,7 +28,8 @@ metadata:
 spec:
   # fast-1.10: RHDH 1.10.x (Backstage 1.49.4). Use "fast" for latest y-stream.
   channel: fast-1.10
-  installPlanApproval: Automatic
+  # Manual: y-stream upgrades (e.g. 1.10 -> 2.1) need a DB backup window before approval.
+  installPlanApproval: Manual
   name: rhdh
   source: redhat-operators
   sourceNamespace: openshift-marketplace
