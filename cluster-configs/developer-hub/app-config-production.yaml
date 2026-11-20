@@ -42,11 +42,17 @@ data:
             clientId: ${KEYCLOAK_CLIENT_ID}
             clientSecret: ${KEYCLOAK_CLIENT_SECRET}
             prompt: auto
+            # Keycloak users must have verified emails (RHDH 2.1 ignores unverified emails)
+            signIn:
+              resolvers:
+                - resolver: emailMatchingUserEntityProfileEmail
         github:
           production:
             clientId: ${GITHUB_INTEGRATION_CLIENT_ID}
             clientSecret: ${GITHUB_INTEGRATION_CLIENT_SECRET}
-            disableIdentityResolution: true
+            # Auxiliary provider (GitHub API access only), no sign-in
+            signIn:
+              resolvers: []
     backend:
       auth:
         externalAccess:

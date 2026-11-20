@@ -26,8 +26,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  # fast-1.10: RHDH 1.10.x (Backstage 1.49.4). Use "fast" for latest y-stream.
-  channel: fast-1.10
+  # fast-2.1: RHDH 2.1.x (Backstage 1.54.9). 2.y releases ship only to versioned
+  # fast-X.Y channels; switch channels manually for each y-stream upgrade.
+  channel: fast-2.1
   # Manual: y-stream upgrades (e.g. 1.10 -> 2.1) need a DB backup window before approval.
   installPlanApproval: Manual
   name: rhdh

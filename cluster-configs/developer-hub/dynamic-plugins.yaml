@@ -10,173 +10,94 @@ data:
     includes:
     - dynamic-plugins.default.yaml
     plugins:
-      # Disable old ArgoCD plugins from defaults (replaced by OCI community plugins)
-      - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
-        disabled: true
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-redhat-argocd
-        disabled: true
+      # RHDH 2.1: bundled ./dynamic-plugins/dist wrappers are removed. Supported plugins
+      # come from registry.access.redhat.com (tag inherited from the shipped defaults),
+      # community plugins from ghcr.io (bs_1.54.9 builds). Frontend plugins use the New
+      # Frontend System and auto-register their extensions; customize via app.extensions.
+      # Authentication providers (no longer built in)
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-auth-backend-module-oidc-provider:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-auth-backend-module-github-provider:{{inherit}}
+        enabled: true
       # GitHub scaffolder actions (publish:github)
-      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-scaffolder-backend-module-github:{{inherit}}
+        enabled: true
       # Catalog and GitHub plugins
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-keycloak-dynamic
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/backstage-community-plugin-catalog-backend-module-keycloak:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-catalog-backend-module-github:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-catalog-backend-module-github-org:{{inherit}}
+        enabled: true
       # Kubernetes plugins
-      - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes-backend-dynamic
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-kubernetes-backend:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-kubernetes:{{inherit}}
+        enabled: true
       # ArgoCD plugins (OCI community)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:bs_1.49.4__1.4.0'
-        disabled: false
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:bs_1.49.4__2.8.0'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              backstage-community.plugin-argocd:
-                mountPoints:
-                  - mountPoint: entity.page.cd/cards
-                    importName: ArgocdDeploymentLifecycle
-                    config:
-                      layout:
-                        gridColumn: 1 / -1
-                      if:
-                        allOf:
-                          - isArgocdConfigured
-                  - mountPoint: entity.page.overview/cards
-                    importName: ArgocdDeploymentSummary
-                    config:
-                      layout:
-                        gridColumnStart: 1
-                        gridColumnEnd: -1
-                      if:
-                        allOf:
-                          - isArgocdConfigured
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd-backend:bs_1.54.9__1.7.2'
+        enabled: true
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-argocd:bs_1.54.9__3.1.3'
+        enabled: true
       # RBAC plugin
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-rbac
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/backstage-community-plugin-rbac:{{inherit}}
+        enabled: true
       # Topology plugin
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-topology
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/backstage-community-plugin-topology:{{inherit}}
+        enabled: true
       # Tekton CI plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-tekton:bs_1.49.4__3.37.0'
-        disabled: false
-      # ArgoCD scaffolder action (Roadie — community alpha actions API not compatible with scaffolder registry in RHDH 1.10)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-argocd:bs_1.49.4__1.8.1'
-        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-tekton:bs_1.54.9__4.0.5!backstage-community-plugin-tekton'
+        enabled: true
+      # ArgoCD scaffolder action (Roadie)
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-argocd:bs_1.54.9__1.9.0'
+        enabled: true
       # Scaffolder utils (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:bs_1.49.4__4.1.2'
-        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-scaffolder-backend-module-utils:bs_1.54.9__4.2.1'
+        enabled: true
       # Scaffolder HTTP request action
-      - package: ./dynamic-plugins/dist/roadiehq-scaffolder-backend-module-http-request-dynamic
-        disabled: false
-      # Orchestrator plugins (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator:bs_1.49.4__5.7.13'
-        disabled: false
+      - package: oci://registry.access.redhat.com/rhdh/roadiehq-scaffolder-backend-module-http-request:{{inherit}}
+        enabled: true
+      # Orchestrator plugins (GA in 2.1)
+      - package: oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-backend:{{inherit}}
+        enabled: true
         pluginConfig:
-          dynamicPlugins:
-            frontend:
-              red-hat-developer-hub.backstage-plugin-orchestrator:
-                dynamicRoutes:
-                  - path: /orchestrator
-                    importName: OrchestratorPage
-                    menuItem:
-                      icon: scaffolder
-                      text: Orchestrator
-                mountPoints:
-                  - mountPoint: entity.page.workflows/cards
-                    importName: OrchestratorPage
-                    config:
-                      layout:
-                        gridColumn: 1 / -1
-                entityTabs:
-                  - path: /workflows
-                    title: Workflows
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator-backend:bs_1.49.4__8.9.5'
-        disabled: false
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets:bs_1.49.4__1.10.8'
-        disabled: false
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:bs_1.49.4__1.5.4'
-        disabled: false
-      # MTA plugins (OCI)
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service.sonataflow-infra
+      - package: oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:{{inherit}}
+        enabled: true
+        pluginConfig:
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service.sonataflow-infra
+      # MTA plugins — no RHDH 2.1 (bs_1.54.9) build published; disabled until one exists
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-frontend:bs_1.49.4__0.4.2'
-        disabled: false
-      # MTA backend — disabled until mta.providerAuth is configured
+        enabled: false
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-mta-backend:bs_1.49.4__0.5.3'
-        disabled: true
-      # MTA entity provider — disabled until mta.providerAuth is configured
+        enabled: false
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-catalog-backend-module-mta-entity-provider:bs_1.49.4__0.4.1'
-        disabled: true
+        enabled: false
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-backstage-plugin-scaffolder-backend-module-mta:bs_1.49.4__0.5.1'
-        disabled: false
+        enabled: false
       # GitHub Issues plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-github-issues:bs_1.49.4__0.21.0'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              backstage-community.plugin-github-issues:
-                mountPoints:
-                  - mountPoint: entity.page.issues/cards
-                    importName: GithubIssuesCard
-                    config:
-                      layout:
-                        gridColumn: "1 / -1"
-                      if:
-                        allOf:
-                          - hasAnnotation: github.com/project-slug
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-github-issues:bs_1.54.9__1.4.0'
+        enabled: true
       # GitHub Pull Requests plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-backstage-plugin-github-pull-requests:bs_1.49.4__3.7.0'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              roadiehq.backstage-plugin-github-pull-requests:
-                mountPoints:
-                  - mountPoint: entity.page.overview/cards
-                    importName: EntityGithubPullRequestsOverviewCard
-                    config:
-                      layout:
-                        gridColumnEnd:
-                          lg: "span 4"
-                          md: "span 6"
-                          xs: "span 12"
-                      if:
-                        allOf:
-                          - isGithubPullRequestsAvailable
-                  - mountPoint: entity.page.pull-requests/cards
-                    importName: EntityGithubPullRequestsContent
-                    config:
-                      layout:
-                        gridColumn: "1 / -1"
-                      if:
-                        allOf:
-                          - isGithubPullRequestsAvailable
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/roadiehq-backstage-plugin-github-pull-requests:bs_1.54.9__3.9.0'
+        enabled: true
       # Quay plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-quay:bs_1.49.4__1.32.1'
-        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-quay:bs_1.54.9__1.38.3'
+        enabled: true
       # Nexus Repository Manager plugin (OCI)
-      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.49.4__1.23.2'
-        disabled: false
-        pluginConfig:
-          dynamicPlugins:
-            frontend:
-              backstage-community.plugin-nexus-repository-manager:
-                mountPoints:
-                  - mountPoint: entity.page.image-registry/cards
-                    importName: NexusRepositoryManagerPage
-                    config:
-                      layout:
-                        gridColumn: 1 / -1
-                      if:
-                        anyOf:
-                          - isNexusRepositoryManagerAvailable
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-community-plugin-nexus-repository-manager:bs_1.54.9__1.27.4'
+        enabled: true
       # Ansible plugins (OCI from registry.redhat.io)
+      # NOTE: automation-portal 2.2/2.3 frontends are Old Frontend System builds (Backstage 1.49.4);
+      # RHDH 2.1 removed OFS, so the Ansible page/field extensions may not render. Kept as-is.
       - package: 'oci://registry.redhat.io/ansible-automation-platform/automation-portal:2.2!ansible-plugin-backstage-rhaap'
         disabled: false
         pluginConfig:
@@ -212,12 +133,12 @@ data:
           dynamicPlugins:
             backend:
               ansible.plugin-scaffolder-backend-module-backstage-rhaap:
-      # Notifications plugins
-      - package: ./dynamic-plugins/dist/backstage-plugin-notifications
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-signals
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-notifications-backend-dynamic
-        disabled: false
-      - package: ./dynamic-plugins/dist/backstage-plugin-signals-backend-dynamic
-        disabled: false
+      # Notifications plugins (notifications are Technology Preview, pinned by digest)
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-notifications@sha256:a7072bf6774d2ccea11e0f4e023b2f3cc3e54afc3bf9d1bf9f73187a41d628b2
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-signals:{{inherit}}
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-notifications-backend@sha256:24b0d871a4c110ad3edfd514d6bc95b4bc6a90529b22a3225171abcdb7af1bd6
+        enabled: true
+      - package: oci://registry.access.redhat.com/rhdh/backstage-plugin-signals-backend:{{inherit}}
+        enabled: true
