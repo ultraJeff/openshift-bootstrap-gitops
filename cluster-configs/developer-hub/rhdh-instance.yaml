@@ -19,8 +19,6 @@ spec:
   deployment:
     patch:
       spec:
-        # TEMPORARY: RHDH stopped for 2.1 upgrade / PostgreSQL 18 migration. Remove when done.
-        replicas: 0
         template:
           spec:
             automountServiceAccountToken: true
