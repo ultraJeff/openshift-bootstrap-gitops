@@ -11,6 +11,7 @@ resources:
 - dynamic-plugins-root-pvc.yaml
 - app-config-production.yaml
 - rbac-policies.yaml
+- intelligent-assistant-stack-config.yaml
 - rhdh-instance.yaml
 - networkpolicy-allow-http-egress.yaml
 - console-link.yaml
