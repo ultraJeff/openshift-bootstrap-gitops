@@ -1,0 +1,36 @@
+---
+# ArgoCD Application for RHDH Orchestrator workflows (external repo)
+#
+# Syncs the root kustomization of github.com/ultraJeff/sonataflow-workflows into
+# sonataflow-infra. The SonataFlowPlatform itself comes from the `serverless`
+# app (cluster-configs/serverless); greeting comes from the Orchestrator Helm chart.
+#
+# namespace-approval and mta-v7 SonataFlow CRs are currently disabled there
+# (operator flowCRC hot loop); see the NOTEs in that repo.
+#
+# No resources-finalizer: deleting this Application must not delete workflows.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonataflow-workflows
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/sonataflow-workflows.git
+    targetRevision: main
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sonataflow-infra
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

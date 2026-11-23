@@ -25,6 +25,7 @@ resources:
 
   # External repos
   - ai-models-gateway.yaml
+  - sonataflow-workflows.yaml
   - observability.yaml
   - network-observability.yaml
   - external-secrets.yaml
