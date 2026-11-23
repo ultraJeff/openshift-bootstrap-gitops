@@ -20,7 +20,7 @@ spec:
       sampleRatio: '0.1'
       storage:
         backend: pv
-        retention: 120h
+        retention: 120h0m0s
   trustedCABundle:
     customCABundle: ''
     managementState: Managed
