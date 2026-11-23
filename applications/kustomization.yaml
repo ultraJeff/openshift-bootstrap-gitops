@@ -19,6 +19,7 @@ resources:
   - rhcl.yaml
   - rhoai.yaml
   - olm.yaml
+  - acs.yaml
 
   # Applications with manual secret prerequisites (in-repo)
   - developer-hub.yaml

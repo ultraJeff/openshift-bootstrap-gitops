@@ -20,7 +20,9 @@ metadata:
   name: rhacs-operator
   namespace: rhacs-operator
 spec:
-  channel: stable
+  # Pinned to a versioned channel so a new major (e.g. 5.1/6.0) isn't picked up
+  # unannounced. Bump deliberately.
+  channel: rhacs-5.0
   installPlanApproval: Automatic
   name: rhacs-operator
   source: redhat-operators
