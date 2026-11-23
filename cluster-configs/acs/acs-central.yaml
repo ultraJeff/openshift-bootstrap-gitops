@@ -2,7 +2,7 @@
 # Demo-sized Central for the 3-node tallgeese lab (ACS 5.0).
 # CPU *requests* are the constraint on this cluster, not usage, so requests are
 # kept well below the documented defaults (Central 1.5 / Central DB 4 / StackRox
-# Scanner 3 / Scanner V4 6.5 cores). Total Central-side requests here: ~1.4 CPU.
+# Scanner 3 / Scanner V4 6.5 cores). Total Central-side requests here: ~2.6 CPU.
 apiVersion: platform.stackrox.io/v1alpha1
 kind: Central
 metadata:
@@ -50,6 +50,42 @@ spec:
         autoScaling: "Disabled"
         replicas: 1
     scannerComponent: "Enabled"
-  # Scanner V4 disabled to save ~6.5 cores of requests (indexer/matcher/db).
+  # Scanner V4 is the image scanner in 5.0 (the 5.0 operator deployed no
+  # StackRox Scanner pods with V4 disabled), so run it demo-sized: one indexer,
+  # one matcher (default 3 + 2 replicas, ~6.5 cores of requests in total).
   scannerV4:
-    scannerComponent: "Disabled"
+    scannerComponent: "Enabled"
+    indexer:
+      resources:
+        requests:
+          cpu: "300m"
+          memory: "1500Mi"
+        limits:
+          cpu: "2"
+          memory: "3Gi"
+      scaling:
+        autoScaling: "Disabled"
+        replicas: 1
+    matcher:
+      resources:
+        requests:
+          cpu: "300m"
+          memory: "3Gi"   # holds the vulnerability DB in memory
+        limits:
+          cpu: "2"
+          memory: "6Gi"
+      scaling:
+        autoScaling: "Disabled"
+        replicas: 1
+    db:
+      resources:
+        requests:
+          cpu: "300m"
+          memory: "2Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+      persistence:
+        persistentVolumeClaim:
+          claimName: scanner-v4-db
+          size: "50Gi"
