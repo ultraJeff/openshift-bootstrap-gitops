@@ -1,9 +1,15 @@
 ---
+# Demo-sized Central for the 3-node tallgeese lab (ACS 5.0).
+# CPU *requests* are the constraint on this cluster, not usage, so requests are
+# kept well below the documented defaults (Central 1.5 / Central DB 4 / StackRox
+# Scanner 3 / Scanner V4 6.5 cores). Total Central-side requests here: ~1.4 CPU.
 apiVersion: platform.stackrox.io/v1alpha1
 kind: Central
 metadata:
   name: stackrox-central-services
   namespace: stackrox
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   central:
     exposure:
@@ -11,29 +17,39 @@ spec:
         enabled: true
     resources:
       requests:
-        cpu: "500m"       # Reduced from 1500m for SNO compatibility
-        memory: "2Gi"     # Reduced from 4Gi for SNO compatibility
+        cpu: "500m"       # default 1.5
+        memory: "2Gi"     # default 4Gi
       limits:
-        cpu: "2"          # Reduced from 4 cores for SNO compatibility
-        memory: "4Gi"     # Reduced from 8Gi for SNO compatibility
-    persistence:
-      persistentVolumeClaim:
-        claimName: "stackrox-db"
-        createClaim: true
-        size: "100Gi"     # Keep storage requirement as recommended
+        cpu: "2"
+        memory: "4Gi"
+    # Central DB (PostgreSQL). Note: spec.central.persistence is an unused
+    # legacy field since 4.6; storage is configured here under db.
+    db:
+      resources:
+        requests:
+          cpu: "500m"     # default 4 cores
+          memory: "2Gi"   # default 8Gi
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+      persistence:
+        persistentVolumeClaim:
+          claimName: central-db
+          size: "100Gi"   # thin-provisioned LVM
   scanner:
+    # StackRox Scanner: deprecated but still required on the Central cluster.
     analyzer:
       resources:
         requests:
-          cpu: "200m"     # Reduced from 1200m for SNO compatibility
-          memory: "1Gi"   # Reduced from 2700Mi for SNO compatibility
+          cpu: "200m"     # default 1 per replica (3 replicas)
+          memory: "1Gi"
         limits:
-          cpu: "1"        # Reduced from 5 cores for SNO compatibility
-          memory: "2Gi"   # Reduced from 8000Mi for SNO compatibility
+          cpu: "1"
+          memory: "2Gi"
       scaling:
-        autoScaling: "Disabled"  # Disable autoscaling for resource constraints
-        replicas: 1             # Single replica for SNO
+        autoScaling: "Disabled"
+        replicas: 1
     scannerComponent: "Enabled"
-  # Disable Scanner V4 to reduce resource consumption
+  # Scanner V4 disabled to save ~6.5 cores of requests (indexer/matcher/db).
   scannerV4:
     scannerComponent: "Disabled"

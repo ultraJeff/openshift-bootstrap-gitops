@@ -7,8 +7,7 @@ metadata:
 resources:
 - acs-operator.yaml
 - stackrox-namespace.yaml
-# Staged install (ACS 5.0): enabled once validated against the installed CRDs.
-# - acs-central.yaml
+- acs-central.yaml
 # SecuredCluster requires a cluster registration secret (CRS) from Central first.
 # - acs-secured-cluster.yaml
 
