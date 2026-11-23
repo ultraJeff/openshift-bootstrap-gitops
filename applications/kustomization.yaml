@@ -17,6 +17,8 @@ resources:
   - devspaces.yaml
   - serverless.yaml
   - rhcl.yaml
+  - rhoai.yaml
+  - olm.yaml
 
   # Applications with manual secret prerequisites (in-repo)
   - developer-hub.yaml
@@ -26,7 +28,6 @@ resources:
   - observability.yaml
   - network-observability.yaml
   - external-secrets.yaml
-  - rhoai.yaml
   - service-mesh.yaml
   - keda.yaml
   - mta.yaml

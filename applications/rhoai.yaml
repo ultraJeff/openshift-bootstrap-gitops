@@ -1,22 +1,28 @@
 ---
-# ArgoCD Application for Red Hat OpenShift AI (external repo)
+# ArgoCD Application for Red Hat OpenShift AI (in-repo)
 #
-# Deploys DSCI, DSC, namespace, ServingRuntime, and InferenceService
-# for a minimal AI/ML serving environment.
+# Installs the RHOAI operator plus the DSCInitialization and DataScienceCluster.
+# Current footprint is KServe-only (dashboard/workbenches/llamastack Removed);
+# see cluster-configs/rhoai/dsc.yaml. Model workloads live elsewhere
+# (ossm-3-demo / infrastructure/maintenance/model-serve.sh).
+#
+# Previously pointed at github.com/ultraJeff/rhoai-super-slim (standalone demo
+# repo, kept as-is).
+#
+# No resources-finalizer: deleting this Application must not cascade-delete the
+# operator Subscription and DSC (which would uninstall RHOAI).
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: rhoai
   namespace: openshift-gitops
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/ultraJeff/rhoai-super-slim.git
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
     targetRevision: main
-    path: manifests/base
+    path: cluster-configs/rhoai
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

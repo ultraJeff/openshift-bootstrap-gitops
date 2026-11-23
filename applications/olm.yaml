@@ -1,0 +1,28 @@
+---
+# ArgoCD Application for cluster-wide OLM settings (OLMConfig "cluster").
+#
+# No resources-finalizer: OLMConfig/cluster is a singleton owned by OLM and must
+# not be deleted if this Application is removed.
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: olm
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ultraJeff/openshift-bootstrap-gitops.git
+    targetRevision: main
+    path: cluster-configs/olm
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

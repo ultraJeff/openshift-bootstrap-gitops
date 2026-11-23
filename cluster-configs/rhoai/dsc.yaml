@@ -1,0 +1,58 @@
+# Exported from the live cluster 2026-11-23 (RHOAI 3.5.3).
+# KServe-only footprint: dashboard, workbenches and llamastackoperator are Removed
+# to free CPU for ACS. KServe (+ MaaS / AI gateway) stays Managed for the model
+# serving demos (iris-onnx, phi-4-mini, qwen25, opt-125m).
+---
+apiVersion: datasciencecluster.opendatahub.io/v2
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
+spec:
+  components:
+    aipipelines: {}
+    dashboard:
+      managementState: Removed
+    feastoperator:
+      managementState: Removed
+    kserve:
+      managementState: Managed
+      modelsAsService:
+        managementState: Managed
+      nim:
+        airGapped: false
+        managementState: Managed
+      rawDeploymentServiceConfig: Headed
+      wva:
+        managementState: Removed
+    kueue:
+      autoCreateQueues: false
+      defaultClusterQueueName: default
+      defaultLocalQueueName: default
+      managementState: Removed
+    llamastackoperator:
+      managementState: Removed
+    mlflowoperator:
+      managementState: Removed
+    modelregistry:
+      managementState: Removed
+      registriesNamespace: rhoai-model-registries
+    ray:
+      managementState: Removed
+    sparkoperator:
+      managementState: Removed
+    trainer:
+      managementState: Removed
+    trainingoperator:
+      managementState: Removed
+    trustyai:
+      eval:
+        lmeval:
+          permitCodeExecution: deny
+          permitOnline: deny
+      managementState: Removed
+      mcpGuardrailsMode: false
+    workbenches:
+      managementState: Removed
+      workbenchNamespace: rhods-notebooks

@@ -1,0 +1,14 @@
+# Cluster-wide OLM settings.
+#
+# disableCopiedCSVs: OLM copies the CSV of every AllNamespaces operator into
+# every namespace. On this cluster that was ~3,100 copies (~200 MiB) held in the
+# kube-apiserver watch cache, contributing to 9-14 GiB apiserver memory.
+# Side effect: global operators show under Installed Operators only in their
+# own namespace (and openshift-operators), not in every project.
+apiVersion: operators.coreos.com/v1
+kind: OLMConfig
+metadata:
+  name: cluster
+spec:
+  features:
+    disableCopiedCSVs: true

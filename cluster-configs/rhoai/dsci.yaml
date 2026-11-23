@@ -1,0 +1,26 @@
+# Exported from the live cluster 2026-11-23 (RHOAI 3.5.3).
+---
+apiVersion: dscinitialization.opendatahub.io/v2
+kind: DSCInitialization
+metadata:
+  name: default-dsci
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+spec:
+  applicationsNamespace: redhat-ods-applications
+  monitoring:
+    managementState: Managed
+    metrics:
+      replicas: 1
+      storage:
+        retention: 5d
+        size: 5Gi
+    namespace: redhat-ods-monitoring
+    traces:
+      sampleRatio: '0.1'
+      storage:
+        backend: pv
+        retention: 120h
+  trustedCABundle:
+    customCABundle: ''
+    managementState: Managed
